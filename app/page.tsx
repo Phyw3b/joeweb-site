@@ -14,23 +14,19 @@ export default function Home() {
   const weddingDate = "2026-10-03";
   const days = daysUntil(weddingDate);
 
-  // “CINEMA MODE”: quebra o container do layout e vira full-bleed na tela toda
-  const fullBleed: React.CSSProperties = {
-    width: "100vw",
-    marginLeft: "calc(50% - 50vw)",
-    marginRight: "calc(50% - 50vw)",
-  };
-
   const accent = "#7dd3fc"; // azul céu (praia elegante)
   const glassBg = "rgba(255,255,255,0.10)";
   const glassBorder = "1px solid rgba(255,255,255,0.18)";
 
   return (
     <div style={{ background: "#0b0f14", color: "#fff" }}>
-      {/* HERO CINEMA */}
+      {/* =========================
+          INÍCIO (HERO CINEMA)
+         ========================= */}
       <section
+        id="inicio"
+        className="full-bleed"
         style={{
-          ...fullBleed,
           position: "relative",
           height: "92vh",
           minHeight: 640,
@@ -175,10 +171,10 @@ export default function Home() {
               ))}
             </div>
 
-            {/* CTA row */}
+            {/* CTA row (âncoras agora) */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }}>
               <Link
-                href="/rsvp"
+                href="/#rsvp"
                 style={{
                   background: "#fff",
                   color: "#0b0f14",
@@ -193,7 +189,7 @@ export default function Home() {
               </Link>
 
               <Link
-                href="/evento"
+                href="/#evento"
                 style={{
                   border: "1px solid rgba(255,255,255,0.35)",
                   background: "rgba(255,255,255,0.10)",
@@ -209,7 +205,7 @@ export default function Home() {
               </Link>
 
               <Link
-                href="/presentes"
+                href="/#presentes"
                 style={{
                   border: "1px solid rgba(255,255,255,0.22)",
                   background: "rgba(255,255,255,0.06)",
@@ -249,14 +245,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* INFO (auto-fit: responsivo sem media query) */}
-      <section
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "64px 24px 28px",
-        }}
-      >
+      {/* =========================
+          BLOCO DE BOAS-VINDAS (o que já existia)
+         ========================= */}
+      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "64px 24px 28px" }}>
         <div
           style={{
             display: "grid",
@@ -272,14 +264,12 @@ export default function Home() {
               padding: 22,
             }}
           >
-            <h2 style={{ margin: 0, fontSize: 22, letterSpacing: -0.2 }}>
-              Em breve
-            </h2>
-            <p style={{ marginTop: 10, opacity: 0.80, lineHeight: 1.6 }}>
+            <h2 style={{ margin: 0, fontSize: 22, letterSpacing: -0.2 }}>Em breve</h2>
+            <p style={{ marginTop: 10, opacity: 0.8, lineHeight: 1.6 }}>
               Este site será atualizado com fotos, horários, mapa e todos os detalhes do dia.
               Por enquanto, já deixamos a estrutura oficial no ar.
             </p>
-            <p style={{ marginTop: 10, opacity: 0.80, lineHeight: 1.6 }}>
+            <p style={{ marginTop: 10, opacity: 0.8, lineHeight: 1.6 }}>
               Salve este link — ele será o ponto oficial do nosso casamento.
             </p>
           </div>
@@ -330,23 +320,177 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </section>
 
-        {/* micro-footer (o footer principal já existe no layout) */}
+      {/* =========================
+          NOSSA HISTÓRIA
+         ========================= */}
+      <section id="historia" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
         <div
           style={{
-            marginTop: 26,
-            borderTop: "1px solid rgba(255,255,255,0.10)",
-            paddingTop: 18,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-            opacity: 0.65,
-            fontSize: 14,
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 18,
+            padding: 22,
           }}
         >
-          <span>© 2026 Jo & Web</span>
-          <span style={{ opacity: 0.85 }}>Casamento na praia — informações oficiais</span>
+          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>Nossa História</h2>
+          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
+            Aqui vai entrar a história de vocês — do primeiro encontro ao “sim”.
+            Por enquanto, deixamos esse espaço preparado para receber o texto e as fotos.
+          </p>
+          <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
+            (A gente pode montar um timeline elegante depois: “Como nos conhecemos”, “O pedido”, “A decisão da praia”…)
+          </p>
+        </div>
+      </section>
+
+      {/* =========================
+          O EVENTO
+         ========================= */}
+      <section id="evento" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
+        <div
+          style={{
+            display: "grid",
+            gap: 18,
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          }}
+        >
+          <div
+            style={{
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.06)",
+              borderRadius: 18,
+              padding: 22,
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>O Evento</h2>
+            <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7 }}>
+              Data: <strong style={{ color: "#fff" }}>{weddingDate}</strong>
+              <br />
+              Local: <span style={{ opacity: 0.9 }}>(em breve)</span>
+              <br />
+              Dress code: <span style={{ opacity: 0.9 }}>(em breve)</span>
+            </p>
+            <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
+              Assim que fecharmos os detalhes, colocamos mapa, horários e recomendações.
+            </p>
+          </div>
+
+          <div
+            style={{
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.06)",
+              borderRadius: 18,
+              padding: 22,
+            }}
+          >
+            <h3 style={{ margin: 0, fontSize: 18, letterSpacing: -0.1 }}>
+              Dicas rápidas
+            </h3>
+            <ul style={{ marginTop: 12, paddingLeft: 18, opacity: 0.82, lineHeight: 1.8 }}>
+              <li>Chegue com antecedência para estacionar / acessar o local</li>
+              <li>Considere calçado confortável (areia + festa)</li>
+              <li>Se for viajar, reserve hospedagem com antecedência</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================
+          RSVP
+         ========================= */}
+      <section id="rsvp" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
+        <div
+          style={{
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 18,
+            padding: 22,
+          }}
+        >
+          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>RSVP</h2>
+          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
+            Aqui vamos colocar o formulário de confirmação de presença. Por enquanto,
+            deixamos o espaço preparado.
+          </p>
+
+          <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <a
+              href="mailto:contato@joeweb.com.br"
+              className="btn btn-primary"
+              style={{ textDecoration: "none" }}
+            >
+              Falar com a gente
+            </a>
+            <Link href="/#contato" className="btn" style={{ textDecoration: "none" }}>
+              Ver contato
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================
+          PRESENTES (HISTÓRIAS)
+         ========================= */}
+      <section
+        id="presentes"
+        style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}
+      >
+        <div
+          style={{
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 18,
+            padding: 22,
+          }}
+        >
+          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>Presentes</h2>
+          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
+            Em vez de lista tradicional, a ideia aqui é um álbum interativo: você escolhe uma
+            foto, contribui (mínimo de R$ 100) e desbloqueia uma história nossa.
+          </p>
+          <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
+            (A tela final revela o destino da lua de mel — com liberação manual nossa 😉)
+          </p>
+
+          <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <span className="badge">Mínimo: R$ 100</span>
+            <span className="badge">Pix / Cartão (Mercado Pago)</span>
+            <span className="badge">Nome do apoiador aparece</span>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================
+          CONTATO
+         ========================= */}
+      <section id="contato" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px 64px" }}>
+        <div
+          style={{
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 18,
+            padding: 22,
+          }}
+        >
+          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>Contato</h2>
+          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7 }}>
+            Tem alguma dúvida? Fala com a gente.
+          </p>
+
+          <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <a className="btn btn-primary" href="mailto:contato@joeweb.com.br">
+              contato@joeweb.com.br
+            </a>
+            <a className="btn" href="https://wa.me/5511994626085" target="_blank" rel="noreferrer">
+              WhatsApp
+            </a>
+          </div>
+
+          <p style={{ marginTop: 12, opacity: 0.65, fontSize: 13 }}>
+            * Depois a gente troca e-mail/WhatsApp pelos contatos reais.
+          </p>
         </div>
       </section>
     </div>

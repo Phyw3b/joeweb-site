@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
@@ -9,12 +10,12 @@ export const metadata: Metadata = {
 };
 
 const nav = [
-  { href: "/", label: "Início" },
-  { href: "/historia", label: "Nossa História" },
-  { href: "/evento", label: "O Evento" },
-  { href: "/rsvp", label: "RSVP" },
-  { href: "/presentes", label: "Presentes" },
-  { href: "/contato", label: "Contato" },
+  { href: "/#inicio", label: "Início" },
+  { href: "/#historia", label: "Nossa História" },
+  { href: "/#evento", label: "O Evento" },
+  { href: "/#rsvp", label: "RSVP" },
+  { href: "/#presentes", label: "Presentes" },
+  { href: "/#contato", label: "Contato" },
 ];
 
 export default function RootLayout({
@@ -25,12 +26,12 @@ export default function RootLayout({
       <body>
         <header className="header">
           <div className="container header-inner">
-            <Link className="brand" href="/">
+            <Link className="brand" href="/#inicio">
               <span className="brand-mark">JW</span>
               <span className="brand-text">Jo & Web</span>
             </Link>
 
-            <nav className="nav">
+            <nav className="nav" aria-label="Navegação principal">
               {nav.map((item) => (
                 <Link key={item.href} href={item.href} className="nav-link">
                   {item.label}
@@ -40,6 +41,10 @@ export default function RootLayout({
           </div>
         </header>
 
+        {/* IMPORTANTE:
+            - Mantemos container para o conteúdo normal
+            - Mas o seu HERO "cinema mode" usa .full-bleed (100vw) e vai quebrar o container quando precisar.
+        */}
         <main className="container main">{children}</main>
 
         <footer className="footer">
@@ -52,3 +57,4 @@ export default function RootLayout({
     </html>
   );
 }
+
