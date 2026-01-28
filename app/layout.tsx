@@ -3,9 +3,9 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Joe & Web | Casamento",
+  title: "Jo & Web | Casamento",
   description:
-    "Site oficial do casamento Joe & Web — informações do evento, RSVP e presentes.",
+    "Site oficial do casamento Jo & Web — informações do evento, RSVP e presentes.",
 };
 
 const nav = [
@@ -27,7 +27,7 @@ export default function RootLayout({
           <div className="container header-inner">
             <Link className="brand" href="/">
               <span className="brand-mark">JW</span>
-              <span className="brand-text">Joe & Web</span>
+              <span className="brand-text">Jo & Web</span>
             </Link>
 
             <nav className="nav">
@@ -44,7 +44,7 @@ export default function RootLayout({
 
         <footer className="footer">
           <div className="container footer-inner">
-            <p className="muted">© {new Date().getFullYear()} Joe & Web</p>
+            <p className="muted">© {new Date().getFullYear()} Jo & Web</p>
             <p className="muted">Casamento na praia — informações oficiais</p>
           </div>
         </footer>
