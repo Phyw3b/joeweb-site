@@ -2,12 +2,34 @@
 "use client";
 
 import Link from "next/link";
+import Historia from "./sections/Historia";
 
 function daysUntil(dateStr: string) {
   const target = new Date(dateStr + "T00:00:00");
   const now = new Date();
   const diff = target.getTime() - now.getTime();
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
+type CardProps = {
+  title: string;
+  children: React.ReactNode;
+};
+
+function Card({ title, children }: CardProps) {
+  return (
+    <div
+      style={{
+        border: "1px solid rgba(255,255,255,0.12)",
+        background: "rgba(255,255,255,0.06)",
+        borderRadius: 18,
+        padding: 22,
+      }}
+    >
+      <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>{title}</h2>
+      <div style={{ marginTop: 12 }}>{children}</div>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -17,6 +39,12 @@ export default function Home() {
   const accent = "#7dd3fc"; // azul céu (praia elegante)
   const glassBg = "rgba(255,255,255,0.10)";
   const glassBorder = "1px solid rgba(255,255,255,0.18)";
+
+  const sectionWrap: React.CSSProperties = {
+    maxWidth: 1120,
+    margin: "0 auto",
+    padding: "56px 24px",
+  };
 
   return (
     <div style={{ background: "#0b0f14", color: "#fff" }}>
@@ -171,7 +199,7 @@ export default function Home() {
               ))}
             </div>
 
-            {/* CTA row (âncoras agora) */}
+            {/* CTA row (âncoras) */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }}>
               <Link
                 href="/#rsvp"
@@ -221,7 +249,6 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* subtle hint */}
             <div
               style={{
                 marginTop: 26,
@@ -246,7 +273,7 @@ export default function Home() {
       </section>
 
       {/* =========================
-          BLOCO DE BOAS-VINDAS (o que já existia)
+          BOAS-VINDAS
          ========================= */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "64px 24px 28px" }}>
         <div
@@ -323,32 +350,18 @@ export default function Home() {
       </section>
 
       {/* =========================
-          NOSSA HISTÓRIA
+          NOSSA HISTÓRIA (componente)
          ========================= */}
-      <section id="historia" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
-        <div
-          style={{
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 18,
-            padding: 22,
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>Nossa História</h2>
-          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
-            Aqui vai entrar a história de vocês — do primeiro encontro ao “sim”.
-            Por enquanto, deixamos esse espaço preparado para receber o texto e as fotos.
-          </p>
-          <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
-            (A gente pode montar um timeline elegante depois: “Como nos conhecemos”, “O pedido”, “A decisão da praia”…)
-          </p>
-        </div>
+      <section id="historia" style={sectionWrap}>
+        <Card title="Nossa História">
+          <Historia />
+        </Card>
       </section>
 
       {/* =========================
           O EVENTO
          ========================= */}
-      <section id="evento" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
+      <section id="evento" style={sectionWrap}>
         <div
           style={{
             display: "grid",
@@ -356,16 +369,8 @@ export default function Home() {
             gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           }}
         >
-          <div
-            style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(255,255,255,0.06)",
-              borderRadius: 18,
-              padding: 22,
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>O Evento</h2>
-            <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7 }}>
+          <Card title="O Evento">
+            <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7 }}>
               Data: <strong style={{ color: "#fff" }}>{weddingDate}</strong>
               <br />
               Local: <span style={{ opacity: 0.9 }}>(em breve)</span>
@@ -375,80 +380,47 @@ export default function Home() {
             <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
               Assim que fecharmos os detalhes, colocamos mapa, horários e recomendações.
             </p>
-          </div>
+          </Card>
 
-          <div
-            style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(255,255,255,0.06)",
-              borderRadius: 18,
-              padding: 22,
-            }}
-          >
-            <h3 style={{ margin: 0, fontSize: 18, letterSpacing: -0.1 }}>
-              Dicas rápidas
-            </h3>
-            <ul style={{ marginTop: 12, paddingLeft: 18, opacity: 0.82, lineHeight: 1.8 }}>
+          <Card title="Dicas rápidas">
+            <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.82, lineHeight: 1.8 }}>
               <li>Chegue com antecedência para estacionar / acessar o local</li>
               <li>Considere calçado confortável (areia + festa)</li>
               <li>Se for viajar, reserve hospedagem com antecedência</li>
             </ul>
-          </div>
+          </Card>
         </div>
       </section>
 
       {/* =========================
           RSVP
          ========================= */}
-      <section id="rsvp" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
-        <div
-          style={{
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 18,
-            padding: 22,
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>RSVP</h2>
-          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
+      <section id="rsvp" style={sectionWrap}>
+        <Card title="RSVP">
+          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
             Aqui vamos colocar o formulário de confirmação de presença. Por enquanto,
             deixamos o espaço preparado.
           </p>
 
           <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <a
-              href="mailto:contato@joeweb.com.br"
-              className="btn btn-primary"
-              style={{ textDecoration: "none" }}
-            >
+            <a href="mailto:contato@joeweb.com.br" className="btn btn-primary">
               Falar com a gente
             </a>
-            <Link href="/#contato" className="btn" style={{ textDecoration: "none" }}>
+            <Link href="/#contato" className="btn">
               Ver contato
             </Link>
           </div>
-        </div>
+        </Card>
       </section>
 
       {/* =========================
-          PRESENTES (HISTÓRIAS)
+          PRESENTES
          ========================= */}
-      <section
-        id="presentes"
-        style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}
-      >
-        <div
-          style={{
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 18,
-            padding: 22,
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>Presentes</h2>
-          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
+      <section id="presentes" style={sectionWrap}>
+        <Card title="Presentes">
+          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
             Em vez de lista tradicional, a ideia aqui é um álbum interativo: você escolhe uma
-            foto, contribui (mínimo de R$ 100) e desbloqueia uma história nossa.
+            foto, contribui (mínimo de R$ 0) e desbloqueia uma história nossa.
           </p>
           <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
             (A tela final revela o destino da lua de mel — com liberação manual nossa 😉)
@@ -459,23 +431,15 @@ export default function Home() {
             <span className="badge">Pix / Cartão (Mercado Pago)</span>
             <span className="badge">Nome do apoiador aparece</span>
           </div>
-        </div>
+        </Card>
       </section>
 
       {/* =========================
           CONTATO
          ========================= */}
-      <section id="contato" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px 64px" }}>
-        <div
-          style={{
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 18,
-            padding: 22,
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>Contato</h2>
-          <p style={{ marginTop: 12, opacity: 0.82, lineHeight: 1.7 }}>
+      <section id="contato" style={{ ...sectionWrap, paddingBottom: 64 }}>
+        <Card title="Contato">
+          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7 }}>
             Tem alguma dúvida? Fala com a gente.
           </p>
 
@@ -483,7 +447,12 @@ export default function Home() {
             <a className="btn btn-primary" href="mailto:contato@joeweb.com.br">
               contato@joeweb.com.br
             </a>
-            <a className="btn" href="https://wa.me/5511994626085" target="_blank" rel="noreferrer">
+            <a
+              className="btn"
+              href="https://wa.me/5511994626085"
+              target="_blank"
+              rel="noreferrer"
+            >
               WhatsApp
             </a>
           </div>
@@ -491,7 +460,7 @@ export default function Home() {
           <p style={{ marginTop: 12, opacity: 0.65, fontSize: 13 }}>
             * Depois a gente troca e-mail/WhatsApp pelos contatos reais.
           </p>
-        </div>
+        </Card>
       </section>
     </div>
   );

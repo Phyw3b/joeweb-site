@@ -1,19 +1,37 @@
+// app/historia/page.tsx
+import Historia from "../sections/Historia";
+
 export default function Page() {
   return (
-    <section className="card">
-      <span className="badge">Nossa História</span>
+    <section
+      style={{
+        maxWidth: 1120,
+        margin: "0 auto",
+        padding: "80px 24px",
+      }}
+    >
+      <div
+        style={{
+          border: "1px solid rgba(255,255,255,0.12)",
+          background: "rgba(255,255,255,0.06)",
+          borderRadius: 18,
+          padding: 22,
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            fontSize: 28,
+            letterSpacing: -0.3,
+          }}
+        >
+          Nossa História
+        </h1>
 
-      <h1 className="h1">Como tudo começou</h1>
-
-      <p className="p">
-        Aqui vamos contar nossa história em capítulos — do primeiro encontro
-        até o grande dia.
-      </p>
-
-      <p className="p">
-        Em breve vamos atualizar esta página com textos e fotos que fazem parte
-        da nossa jornada.
-      </p>
+        <div style={{ marginTop: 18 }}>
+          <Historia />
+        </div>
+      </div>
     </section>
   );
 }
