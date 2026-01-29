@@ -114,36 +114,7 @@ export default function Home() {
               width: "100%",
             }}
           >
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                border: glassBorder,
-                background: glassBg,
-                padding: "10px 14px",
-                borderRadius: 999,
-                width: "fit-content",
-                fontSize: 12,
-                letterSpacing: 0.8,
-                textTransform: "uppercase",
-                backdropFilter: "blur(8px)",
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 999,
-                  background: accent,
-                  display: "inline-block",
-                  boxShadow: `0 0 18px ${accent}`,
-                }}
-              />
-              Site oficial
-            </div>
-
-            <h1
+              <h1
               style={{
                 margin: "18px 0 0 0",
                 fontSize: "clamp(44px, 6.2vw, 84px)",
@@ -245,7 +216,7 @@ export default function Home() {
                   backdropFilter: "blur(8px)",
                 }}
               >
-                Presentes (Histórias)
+                Presentes 
               </Link>
             </div>
 
@@ -352,11 +323,10 @@ export default function Home() {
       {/* =========================
           NOSSA HISTÓRIA (componente)
          ========================= */}
-      <section id="historia" style={sectionWrap}>
-        <Card title="Nossa História">
-          <Historia />
-        </Card>
-      </section>
+      <section id="historia" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
+  <Historia />
+</section>
+
 
       {/* =========================
           O EVENTO
