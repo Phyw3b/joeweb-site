@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import Historia from "./sections/Historia";
+import EventBridgeCountdown from "./sections/EventBridgeCountdown";
 
 function daysUntil(dateStr: string) {
   const target = new Date(dateStr + "T00:00:00");
@@ -326,6 +327,8 @@ export default function Home() {
       <section id="historia" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
   <Historia />
 </section>
+
+<EventBridgeCountdown weddingDateISO={weddingDate} />
 
 
       {/* =========================

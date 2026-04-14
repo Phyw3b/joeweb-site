@@ -10,13 +10,14 @@ export const metadata: Metadata = {
 };
 
 const nav = [
-  { href: "/#inicio", label: "Início" },
+  { href: "/", label: "Início" },
   { href: "/#historia", label: "Nossa História" },
-  { href: "/#evento", label: "O Evento" },
-  { href: "/#rsvp", label: "RSVP" },
-  { href: "/#presentes", label: "Presentes" },
-  { href: "/#contato", label: "Contato" },
+  { href: "/evento", label: "O Evento" }, // 👈 IMPORTANTE
+  { href: "/rsvp", label: "RSVP" },
+  { href: "/presentes", label: "Presentes" },
+  { href: "/contato", label: "Contato" },
 ];
+
 
 export default function RootLayout({
   children,
