@@ -58,7 +58,7 @@ export default function PresentesPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="font-serif text-xl font-semibold italic tracking-wide !text-white opacity-100 transition [text-shadow:0_1px_10px_rgba(0,0,0,0.45)] hover:!text-[#dcecf1]"
+                className="[font-family:var(--font-montserrat)] text-sm font-semibold uppercase tracking-[0.16em] !text-white opacity-100 transition [text-shadow:0_1px_10px_rgba(0,0,0,0.45)] hover:!text-[#dcecf1]"
               >
                 {item.label}
               </Link>

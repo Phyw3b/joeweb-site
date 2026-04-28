@@ -4,6 +4,7 @@ import { Calendar, ChevronDown, Heart, MapPin, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import infoStyles from "./HomeInfoFrame.module.css";
 
 const WEDDING_DATE = new Date("2026-10-03T16:00:00-03:00");
 const INITIAL_COUNTDOWN = {
@@ -40,17 +41,21 @@ export default function Home() {
       {
         Icon: Calendar,
         title: "Data",
-        text: "03 de outubro de 2026 · cerimônia ao pôr do sol",
+        text: "03.10.2026 ás 17 horas",
+        note: "O sol não espera. A cerimônia exige pontualidade!",
       },
       {
         Icon: MapPin,
         title: "Local",
-        text: "Praia · cenário natural · experiência leve",
+        text: "Espaço de Eventos Abricó",
+        note: "Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136",
+        href: "/evento",
+        action: "Ver mapa",
       },
       {
         Icon: Heart,
-        title: "Vibe",
-        text: "Elegante, afetivo e com alma de festa boa",
+        title: "Vibes",
+        text: "Cerimônia ao pôr do sol · pé na areia · festa na sequência",
       },
     ],
     []
@@ -184,7 +189,7 @@ export default function Home() {
               <a
                 key={item}
                 href={getAnchor(item)}
-                className="font-serif text-xl font-semibold italic tracking-wide !text-white opacity-100 transition [text-shadow:0_1px_10px_rgba(0,0,0,0.45)] hover:!text-[#dcecf1]"
+                className="[font-family:var(--font-montserrat)] text-sm font-semibold uppercase tracking-[0.16em] !text-white opacity-100 transition [text-shadow:0_1px_10px_rgba(0,0,0,0.45)] hover:!text-[#dcecf1]"
               >
                 {item}
               </a>
@@ -297,52 +302,72 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative -mt-1 bg-[#173447] px-6 py-14 text-white md:px-10">
-        <div className="mx-auto mb-12 max-w-4xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f4efe6]/85">
-            Contagem regressiva para o grande dia
-          </p>
-          <div
-            className="relative mx-auto mt-8 flex w-full max-w-4xl flex-nowrap overflow-hidden bg-cover bg-center shadow-2xl shadow-black/15"
-            style={{ backgroundImage: "url('/media/sea-countdown.gif')" }}
-          >
-            <div className="absolute inset-0 bg-white/8" />
-            {[
-              { label: "dias", value: countdown.days },
-              { label: "horas", value: countdown.hours },
-              { label: "minutos", value: countdown.minutes },
-              { label: "segundos", value: countdown.seconds },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="relative min-w-0 flex-1 px-1 py-4 sm:px-3 sm:py-5 md:py-7"
+      <section className={infoStyles.section}>
+        <div className={infoStyles.layout}>
+          <div className={infoStyles.leftStack}>
+            {[infoCards[0], infoCards[2]].map(({ Icon, title, text, note }) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+                className={infoStyles.card}
               >
-                <p className="font-serif text-2xl leading-none text-[#082337] drop-shadow-[0_1px_6px_rgba(255,255,255,0.75)] sm:text-3xl md:text-5xl">
-                  {String(item.value)}
-                </p>
-                <p className="mt-2 truncate text-[8px] font-semibold uppercase tracking-[0.08em] text-[#082337] drop-shadow-[0_1px_5px_rgba(255,255,255,0.75)] sm:mt-3 sm:text-[10px] sm:tracking-[0.12em] md:text-xs">
-                  {item.label}
-                </p>
-              </div>
+                <div className={infoStyles.panel}>
+                  <Icon className={infoStyles.icon} size={28} />
+                  <h3
+                    className={`${infoStyles.title} ${
+                      title === "Data" ? infoStyles.dataTitle : ""
+                    }`}
+                  >
+                    {title}
+                  </h3>
+                  <p
+                    className={`${infoStyles.text} ${
+                      title === "Data" ? infoStyles.dataText : ""
+                    }`}
+                  >
+                    {text}
+                  </p>
+                  {note && (
+                    <p
+                      className={`${infoStyles.note} ${
+                        title === "Data" ? infoStyles.dataNote : ""
+                      }`}
+                    >
+                      {note}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
             ))}
           </div>
-        </div>
 
-        <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
-          {infoCards.map(({ Icon, title, text }) => (
-            <motion.div
-              key={title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/10 backdrop-blur-md"
-            >
-              <Icon className="mb-5 text-[#b8dce7]" size={26} />
-              <h3 className="font-serif text-2xl italic">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-white/70">{text}</p>
-            </motion.div>
-          ))}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.08 }}
+            className={`${infoStyles.card} ${infoStyles.localCard}`}
+          >
+            <div className={`${infoStyles.panel} ${infoStyles.localPanel}`}>
+              <MapPin className={infoStyles.icon} size={28} />
+              <h3 className={infoStyles.title}>Local</h3>
+              <p className={infoStyles.text}>
+                Espaço De eventos Eventos Abricó
+              </p>
+              <p className={infoStyles.note}>
+                Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136
+              </p>
+              <a
+                href="/evento"
+                className={infoStyles.mapButton}
+              >
+                Ver mapa
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -523,6 +548,38 @@ export default function Home() {
           <h2 className="font-serif text-5xl font-light italic md:text-7xl">
             Mais que presentes, histórias.
           </h2>
+        </div>
+      </section>
+
+      <section className="bg-[#173447] px-6 py-16 text-white md:px-10">
+        <div className="mx-auto max-w-6xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f4efe6]/85">
+            Contagem regressiva para o grande dia
+          </p>
+          <div
+            className="relative mx-auto mt-8 flex min-h-36 w-full max-w-6xl flex-nowrap overflow-hidden rounded-[2rem] bg-cover bg-center shadow-[0_28px_70px_rgba(0,0,0,0.34)]"
+            style={{ backgroundImage: "url('/media/sea-countdown.gif')" }}
+          >
+            <div className="absolute inset-0 bg-white/8" />
+            {[
+              { label: "dias", value: countdown.days },
+              { label: "horas", value: countdown.hours },
+              { label: "minutos", value: countdown.minutes },
+              { label: "segundos", value: countdown.seconds },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="relative min-w-0 flex-1 px-1 py-4 sm:px-3 sm:py-5 md:py-7"
+              >
+                <p className="font-serif text-2xl leading-none text-[#082337] drop-shadow-[0_1px_6px_rgba(255,255,255,0.75)] sm:text-3xl md:text-5xl">
+                  {String(item.value)}
+                </p>
+                <p className="mt-2 truncate text-[8px] font-semibold uppercase tracking-[0.08em] text-[#082337] drop-shadow-[0_1px_5px_rgba(255,255,255,0.75)] sm:mt-3 sm:text-[10px] sm:tracking-[0.12em] md:text-xs">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

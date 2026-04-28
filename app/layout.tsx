@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Allura } from "next/font/google";
+import { Allura, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const allura = Allura({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-allura",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
@@ -19,7 +24,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={allura.variable}>{children}</body>
+      <body className={`${allura.variable} ${montserrat.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }
