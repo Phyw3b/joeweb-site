@@ -45,7 +45,7 @@
 
 .icon {
   color: #b8dce7;
-  margin-bottom: 26px;
+  margin-bottom: 24px;
 }
 
 .title {
@@ -102,18 +102,23 @@
 
 .mapButton {
   align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(12px);
+  background: rgba(23, 52, 71, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 999px;
   color: white;
   display: inline-flex;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
+  font-size: 14px;
+  font-weight: 600;
+  height: 64px;
+  justify-content: center;
+  letter-spacing: 0.22em;
   margin-top: 22px;
-  padding: 13px 24px;
+  padding: 0 32px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
   text-decoration: none;
   text-transform: uppercase;
+  width: 288px;
   transition:
     background 180ms ease,
     color 180ms ease,
@@ -121,9 +126,9 @@
 }
 
 .mapButton:hover {
-  background: white;
-  color: #173447;
-  transform: translateY(-1px);
+  background: #173447;
+  color: white;
+  transform: translateY(-2px);
 }
 
 @media (min-width: 900px) {

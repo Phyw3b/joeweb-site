@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import infoStyles from "./HomeInfoFrame.module.css";
+import eventPreviewStyles from "./EventPreview.module.css";
 
 const WEDDING_DATE = new Date("2026-10-03T16:00:00-03:00");
 const INITIAL_COUNTDOWN = {
@@ -56,24 +57,6 @@ export default function Home() {
         Icon: Heart,
         title: "Vibes",
         text: "Cerimônia ao pôr do sol · pé na areia · festa na sequência",
-      },
-    ],
-    []
-  );
-
-  const eventCards = useMemo(
-    () => [
-      {
-        title: "Cerimônia",
-        text: "Um momento íntimo, bonito e com o mar como testemunha.",
-      },
-      {
-        title: "Celebração",
-        text: "Boa música, boas pessoas e aquela atmosfera de festa que fica.",
-      },
-      {
-        title: "Memórias",
-        text: "Fotos, vídeos e histórias para guardar antes, durante e depois.",
       },
     ],
     []
@@ -355,7 +338,7 @@ export default function Home() {
               <MapPin className={infoStyles.icon} size={28} />
               <h3 className={infoStyles.title}>Local</h3>
               <p className={infoStyles.text}>
-                Espaço De eventos Eventos Abricó
+                Espaço de Eventos Abricó
               </p>
               <p className={infoStyles.note}>
                 Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136
@@ -478,44 +461,23 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="o-evento"
-        className="relative overflow-hidden bg-[#e6edf0] px-6 py-24 md:px-10 md:py-32"
-      >
-        <div className="relative mx-auto max-w-6xl text-center">
-          <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#3f7f97]">
+      <section id="o-evento" className={eventPreviewStyles.section}>
+        <div className={eventPreviewStyles.content}>
+          <p className={eventPreviewStyles.eyebrow}>
             O evento
           </p>
-          <h2 className="font-serif text-5xl font-light italic md:text-7xl">
+          <h2 className={eventPreviewStyles.title}>
             Um encontro à beira-mar.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#61727a]">
-            Cerimônia leve, festa elegante e aquele tipo de energia que não
-            cabe no convite. Cabe no coração e talvez no story também.
+          <p className={eventPreviewStyles.text}>
+            Cerimônia ao pôr do sol, festa e uma noite pra celebrar.
           </p>
-
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {eventCards.map((card, index) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 26 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: index * 0.1 }}
-                className="rounded-[2rem] bg-white/70 p-8 text-left shadow-xl shadow-[#173447]/10 backdrop-blur-sm"
-              >
-                <p className="mb-5 text-xs uppercase tracking-[0.32em] text-[#3f7f97]">
-                  0{index + 1}
-                </p>
-                <h3 className="font-serif text-3xl italic text-[#173447]">
-                  {card.title}
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-[#61727a]">
-                  {card.text}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+          <a
+            href="/evento"
+            className={eventPreviewStyles.button}
+          >
+            Ver evento completo
+          </a>
         </div>
       </section>
 
@@ -527,13 +489,9 @@ export default function Home() {
           <h2 className="font-serif text-5xl font-light italic md:text-7xl">
             A sua presença importa.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/70">
-            Em breve, este botão poderá abrir o formulário de confirmação,
-            WhatsApp ou uma página dedicada.
-          </p>
           <a
             href="/rsvp"
-            className="mt-10 inline-flex rounded-full bg-white px-9 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#173447] transition hover:-translate-y-0.5 hover:bg-[#dcecf1]"
+            className="mt-10 inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
           >
             Quero confirmar
           </a>

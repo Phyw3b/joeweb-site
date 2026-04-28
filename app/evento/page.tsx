@@ -20,7 +20,7 @@ const details = [
   {
     Icon: MapPin,
     title: "Local",
-    text: "Espaço De eventos Eventos Abricó. Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136.",
+    text: "Espaço de Eventos Abricó. Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136.",
     note: "Cerimônia ao pôr do sol, pé na areia e festa na sequência.",
   },
   {
@@ -32,7 +32,7 @@ const details = [
   {
     Icon: Hotel,
     title: "Hospedagem",
-    text: "Em breve vamos indicar opções próximas ao Espaço De eventos Eventos Abricó para facilitar a logística.",
+    text: "Em breve vamos indicar opções próximas ao Espaço de Eventos Abricó para facilitar a logística.",
     note: "Sugestões e contatos serão atualizados aqui.",
   },
   {
@@ -109,7 +109,7 @@ export default function EventoPage() {
             <div className="relative h-80">
               <Image
                 src="/evento/local.jpg"
-                alt="Espaço De eventos Eventos Abricó"
+                alt="Espaço de Eventos Abricó"
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -119,7 +119,7 @@ export default function EventoPage() {
               <p className="mb-3 text-xs uppercase tracking-[0.32em] text-[#3f7f97]">
                 Local
               </p>
-              <h2 className="font-serif text-4xl italic">Espaço De eventos Eventos Abricó</h2>
+              <h2 className="font-serif text-4xl italic">Espaço de Eventos Abricó</h2>
               <p className="mt-4 leading-7 text-[#61727a]">
                 Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136. Um cenário pensado para cerimônia ao pôr do
                 sol, pé na areia e festa na sequência.
