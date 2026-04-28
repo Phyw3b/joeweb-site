@@ -1,0 +1,227 @@
+.gallerySection {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  background:
+    linear-gradient(rgba(6, 16, 18, 0.68), rgba(6, 16, 18, 0.82)),
+    url("/media/presentes-background.png") center / cover fixed;
+  padding: 14px 18px;
+}
+
+.galleryGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 0;
+}
+
+.galleryImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    filter 300ms ease,
+    transform 300ms ease;
+}
+
+.galleryItem:hover .galleryImage {
+  transform: scale(1.05);
+}
+
+.lockedImage {
+  filter: grayscale(1) brightness(0.72);
+}
+
+.unlockedImage {
+  filter: grayscale(0) brightness(1);
+}
+
+.unlockedMark {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  max-width: calc(100% - 16px);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.72);
+  padding: 4px 8px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.68);
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.modalCard {
+  position: relative;
+  width: min(100%, 520px);
+  max-height: min(92vh, 760px);
+  overflow-y: auto;
+  border-radius: 24px;
+  background: #f4efe6;
+  color: #173447;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+}
+
+.closeButton {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #173447;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  height: 32px;
+  width: 32px;
+}
+
+.modalEyebrow {
+  color: #3f7f97;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+.modalImageWrap {
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  margin: 0 auto 22px;
+  max-width: 280px;
+  overflow: hidden;
+}
+
+.modalImage {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.modalTitle {
+  font-family: serif;
+  font-size: 42px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0;
+}
+
+.modalText {
+  color: #61727a;
+  line-height: 1.75;
+  margin: 18px auto 0;
+  max-width: 420px;
+}
+
+.buyerText,
+.simulationText {
+  color: #3f7f97;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 18px 0 0;
+  text-transform: uppercase;
+}
+
+.inputLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin: 22px 0 8px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.input {
+  background: white;
+  border: 1px solid rgba(23, 52, 71, 0.18);
+  border-radius: 12px;
+  color: #173447;
+  font: inherit;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.modalActions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 18px;
+}
+
+.primaryButton,
+.secondaryButton {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  padding: 13px 16px;
+  text-transform: uppercase;
+}
+
+.primaryButton {
+  background: #173447;
+  color: white;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.secondaryButton {
+  background: #dcecf1;
+  color: #173447;
+}
+
+@media (min-width: 768px) {
+  .galleryGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .galleryGrid {
+    grid-template-columns: repeat(10, 1fr);
+  }
+}

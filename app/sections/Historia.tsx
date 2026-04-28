@@ -1,162 +1,153 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 
-/* =========================
-   TIPOS
-========================= */
 type StoryItem = {
   title: string;
   text: string;
-  imageSrc: string; // caminho em /public
+  imageSrc: string;
   imageAlt: string;
 };
 
-/* =========================
-   HOOK: IN VIEW (SCROLL)
-========================= */
-function useInView(options?: IntersectionObserverInit) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true);
-      },
-      options
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [options]);
-
-  return { ref, inView };
-}
-
-/* =========================
-   STORY CARD
-========================= */
-function StoryCard({
-  item,
-  index,
-}: {
-  item: StoryItem;
-  index: number;
-}) {
-  const { ref, inView } = useInView({ threshold: 0.18 });
-  const sideClass = index % 2 === 0 ? "story-left" : "story-right";
-
-  return (
-    <div
-      ref={ref}
-      className={[
-        "story-item",
-        sideClass,
-        inView ? "reveal-in" : "reveal",
-      ].join(" ")}
-    >
-      {/* IMAGEM */}
-      <div className="story-media">
-        <div className="story-image">
-          <Image
-            src={item.imageSrc}
-            alt={item.imageAlt}
-            fill
-            priority={index === 0}
-            sizes="(max-width: 860px) 92vw, 520px"
-            style={{ objectFit: "cover" }}
-          />
-        </div>
-      </div>
-
-      {/* TEXTO */}
-      <div className="story-content">
-        <span className="story-chip">Momento {index + 1}</span>
-        <h3 className="story-title">{item.title}</h3>
-        <p className="story-text">{item.text}</p>
-      </div>
-    </div>
-  );
-}
-
-/* =========================
-   HISTORIA (SECTION)
-========================= */
 export default function Historia() {
+  const [active, setActive] = useState(0);
+
   const items: StoryItem[] = useMemo(
     () => [
       {
         title: "Onde tudo começou",
         imageSrc: "/historia/01.jpg",
         imageAlt: "Jo & Web — onde tudo começou",
-        text:
-          "Nos conhecemos no lugar mais improvável: no trabalho. " +
-          "Se alguém apostasse que daria certo… provavelmente perderia. " +
-          "Mas, entre conversas despretensiosas, festas, churrascos, futebol e viagens, " +
-          "fomos nos descobrindo — sem pressa, sem roteiro, só vivendo.",
+        text: "Nos conhecemos no lugar mais improvável: no trabalho. Entre conversas despretensiosas, festas, churrascos, futebol e viagens, fomos nos descobrindo — sem pressa, sem roteiro, só vivendo.",
       },
       {
-        title: "O primeiro “sim”",
+        title: "O primeiro sim",
         imageSrc: "/historia/02.jpg",
         imageAlt: "Jo & Web — o primeiro sim",
-        text:
-          "O tempo fez o que só ele sabe fazer. " +
-          "No meio da alegria, da bagunça boa e dos brindes de fim de ano, veio o primeiro grande passo: " +
-          "um pedido de namoro em pleno Réveillon. " +
-          "Ali, sem perceber, começava uma nova contagem.",
+        text: "No meio da alegria, da bagunça boa e dos brindes de fim de ano, veio o primeiro grande passo: um pedido de namoro em pleno Réveillon.",
       },
       {
         title: "Vida real, amor real",
         imageSrc: "/historia/03.jpg",
-        imageAlt: "Jo & Web — vida real, amor real",
-        text:
-          "Um ano depois, o noivado. Planos, contratos, nosso primeiro apartamento, reforma… " +
-          "E, no meio de tudo isso, a vida resolveu acelerar: " +
-          "a Luiza chegou, mudando tudo — e deixando tudo ainda mais certo. " +
-          "Casamento civil, família formada, amor testado e fortalecido a cada ciclo.",
+        imageAlt: "Jo & Web — vida real",
+        text: "Um ano depois, o noivado. Planos, contratos, primeiro apartamento, reforma… e a Luiza chegou, mudando tudo — e deixando tudo ainda mais certo.",
+      },
+      {
+        title: "Família, planos e estrada",
+        imageSrc: "/historia/04.jpg",
+        imageAlt: "Jo & Web — família e planos",
+        text: "Entre viagens, aprendizados, rotina, conquistas e desafios, fomos construindo uma história com base no que mais importa: parceria, amor e verdade.",
       },
       {
         title: "O encontro marcado",
-        imageSrc: "/historia/04.jpg",
-        imageAlt: "Jo & Web — o encontro marcado",
-        text:
-          "Depois de tantas etapas, aprendizados e transformações, entendemos: era hora de celebrar do nosso jeito. " +
-          "Com os pés na areia, olho no olho e o coração tranquilo. " +
-          "Um encontro marcado para dizer, mais uma vez — e para sempre — sim.",
+        imageSrc: "/historia/05.jpg",
+        imageAlt: "Jo & Web — casamento na praia",
+        text: "Agora chegou a hora de celebrar do nosso jeito: com os pés na areia, coração tranquilo e as pessoas que fazem parte da nossa vida.",
       },
     ],
     []
   );
 
+  const current = items[active];
+
+  function prev() {
+    setActive((value) => (value === 0 ? items.length - 1 : value - 1));
+  }
+
+  function next() {
+    setActive((value) => (value === items.length - 1 ? 0 : value + 1));
+  }
+
   return (
-    <div className="story-wrap">
-      {/* HEADER */}
-      <div className="story-head">
-        <h2 className="story-h2">Nossa História</h2>
-        <p className="story-sub">
-          Quem rola a página tem que sentir o tempo passando. 🌊
-        </p>
+    <section
+      id="historia"
+      className="relative overflow-hidden bg-[#f4efe6] px-6 py-24 text-[#263b45]"
+    >
+      <div className="absolute left-[-10%] top-10 h-72 w-72 rounded-full bg-[#9bbdca]/40 blur-3xl" />
+      <div className="absolute bottom-0 right-[-10%] h-96 w-96 rounded-full bg-[#d7c3a3]/45 blur-3xl" />
+
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="mx-auto mb-14 max-w-3xl text-center">
+          <p className="mb-4 text-sm uppercase tracking-[0.35em] text-[#6f8c96]">
+            Nossa história
+          </p>
+
+          <h2 className="font-serif text-5xl leading-tight text-[#263b45] md:text-7xl">
+            Um amor com cheiro de mar
+          </h2>
+
+          <p className="mt-6 text-lg leading-relaxed text-[#536872]">
+            Cinco momentos para contar, com leveza, como chegamos até aqui.
+          </p>
+        </div>
+
+        <div className="grid items-center gap-10 rounded-[2.5rem] border border-white/70 bg-white/45 p-4 shadow-2xl backdrop-blur-md md:grid-cols-[1.05fr_0.95fr] md:p-8">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-[#d7e8ee] shadow-xl md:aspect-[5/4]">
+            <Image
+              src={current.imageSrc}
+              alt={current.imageAlt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 92vw, 620px"
+              priority
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1f2f38]/45 via-transparent to-transparent" />
+
+            <div className="absolute bottom-5 left-5 rounded-full bg-white/75 px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-[#5f7f8c] backdrop-blur-md">
+              Momento {active + 1} de {items.length}
+            </div>
+          </div>
+
+          <div className="px-2 py-6 md:px-6">
+            <h3 className="font-serif text-4xl leading-tight text-[#263b45] md:text-6xl">
+              {current.title}
+            </h3>
+
+            <p className="mt-6 text-lg leading-relaxed text-[#435862]">
+              {current.text}
+            </p>
+
+            <div className="mt-10 flex items-center gap-4">
+              <button
+                type="button"
+                onClick={prev}
+                className="grid h-12 w-12 place-items-center rounded-full border border-[#263b45]/20 bg-white/50 text-2xl text-[#263b45] transition hover:bg-white"
+                aria-label="História anterior"
+              >
+                ‹
+              </button>
+
+              <button
+                type="button"
+                onClick={next}
+                className="grid h-12 w-12 place-items-center rounded-full bg-[#263b45] text-2xl text-white transition hover:bg-[#7fa6b3]"
+                aria-label="Próxima história"
+              >
+                ›
+              </button>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-2">
+              {items.map((item, index) => (
+                <button
+                  key={item.title}
+                  type="button"
+                  onClick={() => setActive(index)}
+                  className={[
+                    "h-2.5 rounded-full transition-all",
+                    active === index
+                      ? "w-10 bg-[#263b45]"
+                      : "w-2.5 bg-[#9bbdca]",
+                  ].join(" ")}
+                  aria-label={`Ir para ${item.title}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* LINHA DA TIMELINE */}
-      <div className="story-timeline" aria-hidden />
-
-      {/* ITENS */}
-      <div className="story-list">
-        {items.map((item, idx) => (
-          <StoryCard key={item.title} item={item} index={idx} />
-        ))}
-      </div>
-
-      {/* FECHAMENTO */}
-      <p className="story-end">
-        Porque todo ciclo merece ser celebrado.
-      </p>
-    </div>
+    </section>
   );
 }

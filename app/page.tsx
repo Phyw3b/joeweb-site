@@ -1,440 +1,539 @@
-// app/page.tsx
 "use client";
 
-import Link from "next/link";
-import Historia from "./sections/Historia";
-import EventBridgeCountdown from "./sections/EventBridgeCountdown";
+import { Calendar, ChevronDown, Heart, MapPin, Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 
-function daysUntil(dateStr: string) {
-  const target = new Date(dateStr + "T00:00:00");
-  const now = new Date();
-  const diff = target.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
-
-type CardProps = {
-  title: string;
-  children: React.ReactNode;
+const WEDDING_DATE = new Date("2026-10-03T16:00:00-03:00");
+const INITIAL_COUNTDOWN = {
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
 };
 
-function Card({ title, children }: CardProps) {
-  return (
-    <div
-      style={{
-        border: "1px solid rgba(255,255,255,0.12)",
-        background: "rgba(255,255,255,0.06)",
-        borderRadius: 18,
-        padding: 22,
-      }}
-    >
-      <h2 style={{ margin: 0, fontSize: 24, letterSpacing: -0.2 }}>{title}</h2>
-      <div style={{ marginTop: 12 }}>{children}</div>
-    </div>
-  );
+function getCountdown() {
+  const diff = Math.max(WEDDING_DATE.getTime() - Date.now(), 0);
+
+  return {
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((diff / (1000 * 60)) % 60),
+    seconds: Math.floor((diff / 1000) % 60),
+  };
 }
 
 export default function Home() {
-  const weddingDate = "2026-10-03";
-  const days = daysUntil(weddingDate);
+  const [open, setOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [activeStory, setActiveStory] = useState(0);
+  const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
 
-  const accent = "#7dd3fc"; // azul céu (praia elegante)
-  const glassBg = "rgba(255,255,255,0.10)";
-  const glassBorder = "1px solid rgba(255,255,255,0.18)";
+  const navItems = useMemo(
+    () => ["Início", "Nossa História", "O Evento", "RSVP", "Presentes"],
+    []
+  );
 
-  const sectionWrap: React.CSSProperties = {
-    maxWidth: 1120,
-    margin: "0 auto",
-    padding: "56px 24px",
-  };
+  const infoCards = useMemo(
+    () => [
+      {
+        Icon: Calendar,
+        title: "Data",
+        text: "03 de outubro de 2026 · cerimônia ao pôr do sol",
+      },
+      {
+        Icon: MapPin,
+        title: "Local",
+        text: "Praia · cenário natural · experiência leve",
+      },
+      {
+        Icon: Heart,
+        title: "Vibe",
+        text: "Elegante, afetivo e com alma de festa boa",
+      },
+    ],
+    []
+  );
+
+  const eventCards = useMemo(
+    () => [
+      {
+        title: "Cerimônia",
+        text: "Um momento íntimo, bonito e com o mar como testemunha.",
+      },
+      {
+        title: "Celebração",
+        text: "Boa música, boas pessoas e aquela atmosfera de festa que fica.",
+      },
+      {
+        title: "Memórias",
+        text: "Fotos, vídeos e histórias para guardar antes, durante e depois.",
+      },
+    ],
+    []
+  );
+
+  const storyCards = useMemo(
+    () => [
+      {
+        chapter: "Capítulo 01",
+        title: "O encontro",
+        text: "Toda história grande começa com um detalhe pequeno: um olhar, uma conversa, uma coincidência que depois parece destino.",
+        image: "/historia/01.jpg",
+      },
+      {
+        chapter: "Capítulo 02",
+        title: "A conexão",
+        text: "Entre risadas, afinidades e planos surgindo sem pressa, a vida começou a mostrar que tinha algo especial ali.",
+        image: "/historia/02.jpg",
+      },
+      {
+        chapter: "Capítulo 03",
+        title: "As memórias",
+        text: "Viagens, família, amigos e pequenos rituais foram virando a base de tudo que somos juntos.",
+        image: "/historia/03.jpg",
+      },
+      {
+        chapter: "Capítulo 04",
+        title: "O sim",
+        text: "O momento em que a escolha virou promessa. Não como ponto final, mas como início de uma fase ainda mais bonita.",
+        image: "/historia/04.jpg",
+      },
+      {
+        chapter: "Capítulo 05",
+        title: "O nosso para sempre",
+        text: "Agora chegou a hora de celebrar com quem fez parte da caminhada. Esse dia também é sobre vocês conosco.",
+        image: "/historia/05.jpg",
+      },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY || 0);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateCountdown = () => setCountdown(getCountdown());
+    const initialTimer = window.setTimeout(updateCountdown, 0);
+    const timer = window.setInterval(updateCountdown, 1000);
+
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveStory((current) => (current + 1) % storyCards.length);
+    }, 5000);
+
+    return () => window.clearInterval(timer);
+  }, [storyCards.length]);
+
+  const getAnchor = (item: string) =>
+    item === "Presentes"
+      ? "/presentes"
+      :
+    `#${item
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replaceAll(" ", "-")}`;
+
+  const currentStory = storyCards[activeStory];
 
   return (
-    <div style={{ background: "#0b0f14", color: "#fff" }}>
-      {/* =========================
-          INÍCIO (HERO CINEMA)
-         ========================= */}
-      <section
-        id="inicio"
-        className="full-bleed"
-        style={{
-          position: "relative",
-          height: "92vh",
-          minHeight: 640,
-          overflow: "hidden",
-        }}
+    <main className="min-h-screen bg-[#f4efe6] text-[#173447] selection:bg-[#9fc7d7]/40">
+      <header
+        className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${
+          scrollY > 30
+            ? "bg-[#082337]/90 shadow-lg shadow-black/20 backdrop-blur-xl"
+            : "bg-[#082337]/55 shadow-lg shadow-black/10 backdrop-blur-md"
+        }`}
       >
-        {/* Background */}
-        <img
-          src="/hero/hero.jpg"
-          alt="Jo & Web"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-            transform: "scale(1.04)",
-            filter: "saturate(1.05) contrast(1.05)",
-          }}
-        />
-
-        {/* Overlay (cinema) */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(90deg, rgba(3,7,12,0.82) 0%, rgba(3,7,12,0.55) 45%, rgba(3,7,12,0.35) 100%)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(80% 70% at 20% 30%, rgba(125,211,252,0.10) 0%, rgba(0,0,0,0) 55%)",
-            mixBlendMode: "screen",
-          }}
-        />
-
-        {/* Content */}
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              maxWidth: 1120,
-              margin: "0 auto",
-              padding: "0 24px",
-              width: "100%",
-            }}
-          >
-              <h1
-              style={{
-                margin: "18px 0 0 0",
-                fontSize: "clamp(44px, 6.2vw, 84px)",
-                lineHeight: 1.02,
-                letterSpacing: -1,
-                fontWeight: 800,
-              }}
-            >
-              Jo <span style={{ opacity: 0.7 }}>&</span> Web
-            </h1>
-
-            <p
-              style={{
-                margin: "14px 0 0 0",
-                maxWidth: 760,
-                opacity: 0.92,
-                fontSize: "clamp(16px, 1.6vw, 20px)",
-                lineHeight: 1.45,
-              }}
-            >
-              Estamos contando os dias para celebrar nosso amor à beira-mar.
-              <br />
-              Aqui você encontra todos os detalhes para viver esse momento com a gente.
-            </p>
-
-            {/* Quick info chips */}
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 10,
-                marginTop: 18,
-              }}
-            >
-              {[
-                { t: `📅 ${weddingDate}` },
-                { t: `⏳ Faltam ${days} dias` },
-                { t: "🏖️ Casamento na praia" },
-              ].map((item) => (
-                <span
-                  key={item.t}
-                  style={{
-                    background: "rgba(255,255,255,0.12)",
-                    border: "1px solid rgba(255,255,255,0.14)",
-                    padding: "8px 12px",
-                    borderRadius: 999,
-                    fontSize: 14,
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  {item.t}
-                </span>
-              ))}
-            </div>
-
-            {/* CTA row (âncoras) */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }}>
-              <Link
-                href="/#rsvp"
-                style={{
-                  background: "#fff",
-                  color: "#0b0f14",
-                  padding: "12px 16px",
-                  borderRadius: 14,
-                  fontWeight: 800,
-                  textDecoration: "none",
-                  boxShadow: "0 12px 28px rgba(0,0,0,0.35)",
-                }}
-              >
-                Confirmar Presença
-              </Link>
-
-              <Link
-                href="/#evento"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.35)",
-                  background: "rgba(255,255,255,0.10)",
-                  color: "#fff",
-                  padding: "12px 16px",
-                  borderRadius: 14,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                Ver detalhes do evento
-              </Link>
-
-              <Link
-                href="/#presentes"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.22)",
-                  background: "rgba(255,255,255,0.06)",
-                  color: "rgba(255,255,255,0.92)",
-                  padding: "12px 16px",
-                  borderRadius: 14,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                Presentes 
-              </Link>
-            </div>
-
-            <div
-              style={{
-                marginTop: 26,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                opacity: 0.75,
-                fontSize: 13,
-              }}
-            >
-              <span
-                style={{
-                  width: 44,
-                  height: 1,
-                  background: "rgba(255,255,255,0.35)",
-                }}
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-10">
+          <a href="#inicio" className="group flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/35 bg-white/10 p-1 backdrop-blur-md">
+              <Image
+                src="/media/gflor-logo.svg"
+                alt="G Flor"
+                fill
+                className="object-contain p-1"
+                sizes="40px"
               />
-              Role para ver mais
             </div>
-          </div>
+            <div className="hidden leading-none text-white sm:block">
+              <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
+                Jo & Web
+              </p>
+            </div>
+          </a>
+
+          <nav
+            className="hidden items-center gap-8 md:flex"
+            aria-label="Navegação principal"
+          >
+            {navItems.map((item) => (
+              <a
+                key={item}
+                href={getAnchor(item)}
+                className="font-serif text-xl font-semibold italic tracking-wide !text-white opacity-100 transition [text-shadow:0_1px_10px_rgba(0,0,0,0.45)] hover:!text-[#dcecf1]"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            className="rounded-full border border-white/25 bg-white/10 p-3 text-white backdrop-blur-md md:hidden"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={open}
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-      </section>
 
-      {/* =========================
-          BOAS-VINDAS
-         ========================= */}
-      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "64px 24px 28px" }}>
-        <div
-          style={{
-            display: "grid",
-            gap: 18,
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          }}
-        >
-          <div
-            style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(255,255,255,0.06)",
-              borderRadius: 18,
-              padding: 22,
-            }}
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-5 mb-5 rounded-[2rem] border border-white/15 bg-[#173447]/95 p-5 text-white backdrop-blur-xl md:hidden"
           >
-            <h2 style={{ margin: 0, fontSize: 22, letterSpacing: -0.2 }}>Em breve</h2>
-            <p style={{ marginTop: 10, opacity: 0.8, lineHeight: 1.6 }}>
-              Este site será atualizado com fotos, horários, mapa e todos os detalhes do dia.
-              Por enquanto, já deixamos a estrutura oficial no ar.
-            </p>
-            <p style={{ marginTop: 10, opacity: 0.8, lineHeight: 1.6 }}>
-              Salve este link — ele será o ponto oficial do nosso casamento.
-            </p>
-          </div>
-
-          <div
-            style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(255,255,255,0.06)",
-              borderRadius: 18,
-              padding: 22,
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: 22, letterSpacing: -0.2 }}>
-              O que você encontra aqui
-            </h2>
-
-            <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
-              {[
-                "Data, local, mapa e dress code",
-                "RSVP simples e rápido",
-                "Álbum interativo de histórias (presentes)",
-                "Contato para dúvidas",
-              ].map((t) => (
-                <div
-                  key={t}
-                  style={{
-                    display: "flex",
-                    gap: 10,
-                    alignItems: "flex-start",
-                    opacity: 0.82,
-                    lineHeight: 1.5,
-                  }}
+            <div className="grid gap-4">
+              {navItems.map((item) => (
+                <a
+                  key={item}
+                  href={getAnchor(item)}
+                  onClick={() => setOpen(false)}
+                  className="text-sm uppercase tracking-[0.25em] text-white/80"
                 >
-                  <span
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 999,
-                      background: accent,
-                      marginTop: 6,
-                      boxShadow: `0 0 14px ${accent}`,
-                      flex: "0 0 auto",
-                    }}
-                  />
-                  <span>{t}</span>
-                </div>
+                  {item}
+                </a>
               ))}
             </div>
-          </div>
+          </motion.div>
+        )}
+      </header>
+
+      <section id="inicio" className="relative min-h-screen overflow-hidden">
+        <div className="absolute inset-0">
+          <div
+            className="h-full w-full scale-105 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/hero/hero.jpg')",
+              transform: `scale(1.08) translateY(${scrollY * 0.08}px)`,
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-[#d8c9b0]/95" />
         </div>
-      </section>
 
-      {/* =========================
-          NOSSA HISTÓRIA (componente)
-         ========================= */}
-      <section id="historia" style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 24px" }}>
-  <Historia />
-</section>
-
-<EventBridgeCountdown weddingDateISO={weddingDate} />
-
-
-      {/* =========================
-          O EVENTO
-         ========================= */}
-      <section id="evento" style={sectionWrap}>
-        <div
-          style={{
-            display: "grid",
-            gap: 18,
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          }}
-        >
-          <Card title="O Evento">
-            <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7 }}>
-              Data: <strong style={{ color: "#fff" }}>{weddingDate}</strong>
-              <br />
-              Local: <span style={{ opacity: 0.9 }}>(em breve)</span>
-              <br />
-              Dress code: <span style={{ opacity: 0.9 }}>(em breve)</span>
-            </p>
-            <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
-              Assim que fecharmos os detalhes, colocamos mapa, horários e recomendações.
-            </p>
-          </Card>
-
-          <Card title="Dicas rápidas">
-            <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.82, lineHeight: 1.8 }}>
-              <li>Chegue com antecedência para estacionar / acessar o local</li>
-              <li>Considere calçado confortável (areia + festa)</li>
-              <li>Se for viajar, reserve hospedagem com antecedência</li>
-            </ul>
-          </Card>
-        </div>
-      </section>
-
-      {/* =========================
-          RSVP
-         ========================= */}
-      <section id="rsvp" style={sectionWrap}>
-        <Card title="RSVP">
-          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
-            Aqui vamos colocar o formulário de confirmação de presença. Por enquanto,
-            deixamos o espaço preparado.
-          </p>
-
-          <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <a href="mailto:contato@joeweb.com.br" className="btn btn-primary">
-              Falar com a gente
-            </a>
-            <Link href="/#contato" className="btn">
-              Ver contato
-            </Link>
-          </div>
-        </Card>
-      </section>
-
-      {/* =========================
-          PRESENTES
-         ========================= */}
-      <section id="presentes" style={sectionWrap}>
-        <Card title="Presentes">
-          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7, maxWidth: 900 }}>
-            Em vez de lista tradicional, a ideia aqui é um álbum interativo: você escolhe uma
-            foto, contribui (mínimo de R$ 0) e desbloqueia uma história nossa.
-          </p>
-          <p style={{ marginTop: 10, opacity: 0.72, lineHeight: 1.7 }}>
-            (A tela final revela o destino da lua de mel — com liberação manual nossa 😉)
-          </p>
-
-          <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <span className="badge">Mínimo: R$ 100</span>
-            <span className="badge">Pix / Cartão (Mercado Pago)</span>
-            <span className="badge">Nome do apoiador aparece</span>
-          </div>
-        </Card>
-      </section>
-
-      {/* =========================
-          CONTATO
-         ========================= */}
-      <section id="contato" style={{ ...sectionWrap, paddingBottom: 64 }}>
-        <Card title="Contato">
-          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7 }}>
-            Tem alguma dúvida? Fala com a gente.
-          </p>
-
-          <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <a className="btn btn-primary" href="mailto:contato@joeweb.com.br">
-              contato@joeweb.com.br
-            </a>
-            <a
-              className="btn"
-              href="https://wa.me/5511994626085"
-              target="_blank"
-              rel="noreferrer"
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-28 text-center text-white md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease: "easeOut" }}
+            className="max-w-5xl"
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: 26 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.1, delay: 0.18, ease: "easeOut" }}
+              className="[font-family:var(--font-allura)] text-7xl font-light leading-[0.92] md:text-9xl lg:text-[11rem]"
             >
-              WhatsApp
-            </a>
+              Jo <span className="text-[#b8dce7]">&</span> Web
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.38, ease: "easeOut" }}
+              className="mx-auto mt-8 max-w-3xl text-lg font-light leading-8 text-white/85 md:text-2xl md:leading-10"
+            >
+              Duas histórias, um destino e o começo de um novo capítulo diante
+              do mar.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.58, ease: "easeOut" }}
+              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            >
+              <a
+                href="#rsvp"
+                className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
+              >
+                Confirmar presença
+              </a>
+              <a
+                href="#o-evento"
+                className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
+              >
+                Ver detalhes
+              </a>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1, duration: 1 }}
+            className="absolute bottom-9 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 text-white/65"
+          >
+            <p className="text-[10px] uppercase tracking-[0.38em]">
+              Role para sentir
+            </p>
+            <ChevronDown className="animate-bounce" size={20} />
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative -mt-1 bg-[#173447] px-6 py-14 text-white md:px-10">
+        <div className="mx-auto mb-12 max-w-4xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f4efe6]/85">
+            Contagem regressiva para o grande dia
+          </p>
+          <div
+            className="relative mx-auto mt-8 flex w-full max-w-4xl flex-nowrap overflow-hidden bg-cover bg-center shadow-2xl shadow-black/15"
+            style={{ backgroundImage: "url('/media/sea-countdown.gif')" }}
+          >
+            <div className="absolute inset-0 bg-white/8" />
+            {[
+              { label: "dias", value: countdown.days },
+              { label: "horas", value: countdown.hours },
+              { label: "minutos", value: countdown.minutes },
+              { label: "segundos", value: countdown.seconds },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="relative min-w-0 flex-1 px-1 py-4 sm:px-3 sm:py-5 md:py-7"
+              >
+                <p className="font-serif text-2xl leading-none text-[#082337] drop-shadow-[0_1px_6px_rgba(255,255,255,0.75)] sm:text-3xl md:text-5xl">
+                  {String(item.value)}
+                </p>
+                <p className="mt-2 truncate text-[8px] font-semibold uppercase tracking-[0.08em] text-[#082337] drop-shadow-[0_1px_5px_rgba(255,255,255,0.75)] sm:mt-3 sm:text-[10px] sm:tracking-[0.12em] md:text-xs">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
+          {infoCards.map(({ Icon, title, text }) => (
+            <motion.div
+              key={title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/10 backdrop-blur-md"
+            >
+              <Icon className="mb-5 text-[#b8dce7]" size={26} />
+              <h3 className="font-serif text-2xl italic">{title}</h3>
+              <p className="mt-3 text-sm leading-6 text-white/70">{text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="nossa-historia"
+        className="bg-[#f4efe6] px-6 py-24 md:px-10 md:py-32"
+      >
+        <div className="mx-auto max-w-[1500px]">
+          <div className="mx-auto max-w-5xl text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#3f7f97]">
+                Nossa história
+              </p>
+              <h2 className="font-serif text-5xl font-light italic leading-tight text-[#173447] md:text-7xl">
+                Cinco momentos que viraram caminho.
+              </h2>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="hidden"
+            >
+              Um carrossel para contar a história de vocês com calma, beleza e
+              emoção. Aqui depois entram fotos reais, datas e textos mais
+              pessoais.
+            </motion.p>
           </div>
 
-          <p style={{ marginTop: 12, opacity: 0.65, fontSize: 13 }}>
-            * Depois a gente troca e-mail/WhatsApp pelos contatos reais.
-          </p>
-        </Card>
+          <div className="mt-14 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px]">
+            <motion.div
+              key={currentStory.title}
+              initial={{ opacity: 0, x: -28 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55 }}
+              className="relative overflow-hidden rounded-[2.5rem] bg-[#d8c9b0] shadow-2xl shadow-[#173447]/15"
+            >
+              <div className="relative h-[620px] w-full md:h-[720px] lg:h-[820px]">
+                <Image
+                  src={currentStory.image}
+                  alt={currentStory.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 1100px"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#082337]/88 via-[#173447]/24 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white md:p-12">
+                <p className="mb-4 text-xs uppercase tracking-[0.36em] text-[#b8dce7]">
+                  {currentStory.chapter}
+                </p>
+                <h3 className="font-serif text-5xl italic md:text-6xl">
+                  {currentStory.title}
+                </h3>
+                <p className="mt-5 max-w-2xl text-lg leading-8 text-white/80">
+                  {currentStory.text}
+                </p>
+              </div>
+            </motion.div>
+
+            <div className="relative flex flex-col gap-4 pl-6">
+              <div className="absolute bottom-6 left-5 top-6 hidden w-px bg-[#8bb8c7]/45 lg:block" />
+              {storyCards.map((card, index) => {
+                const active = index === activeStory;
+
+                return (
+                  <button
+                    key={card.title}
+                    type="button"
+                    onClick={() => setActiveStory(index)}
+                    className={`group relative w-full rounded-[1.35rem] border p-5 text-left transition-all duration-300 ${
+                      active
+                        ? "border-[#6aa6b8] bg-white shadow-xl shadow-[#173447]/10"
+                        : "border-[#d8c9b0]/70 bg-white/55 hover:border-[#9fc7d7] hover:bg-white"
+                    }`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div
+                        className={`mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-semibold ring-4 ring-[#f4efe6] ${
+                          active
+                            ? "bg-[#173447] text-white"
+                            : "bg-[#dcecf1] text-[#3f7f97]"
+                        }`}
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.28em] text-[#3f7f97]">
+                          {card.chapter}
+                        </p>
+                        <h4 className="mt-1 font-serif text-2xl italic text-[#173447]">
+                          {card.title}
+                        </h4>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </section>
-    </div>
+
+      <section
+        id="o-evento"
+        className="relative overflow-hidden bg-[#e6edf0] px-6 py-24 md:px-10 md:py-32"
+      >
+        <div className="relative mx-auto max-w-6xl text-center">
+          <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#3f7f97]">
+            O evento
+          </p>
+          <h2 className="font-serif text-5xl font-light italic md:text-7xl">
+            Um encontro à beira-mar.
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#61727a]">
+            Cerimônia leve, festa elegante e aquele tipo de energia que não
+            cabe no convite. Cabe no coração e talvez no story também.
+          </p>
+
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {eventCards.map((card, index) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 26 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: index * 0.1 }}
+                className="rounded-[2rem] bg-white/70 p-8 text-left shadow-xl shadow-[#173447]/10 backdrop-blur-sm"
+              >
+                <p className="mb-5 text-xs uppercase tracking-[0.32em] text-[#3f7f97]">
+                  0{index + 1}
+                </p>
+                <h3 className="font-serif text-3xl italic text-[#173447]">
+                  {card.title}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-[#61727a]">
+                  {card.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="rsvp" className="bg-[#173447] px-6 py-24 text-white md:px-10 md:py-32">
+        <div className="mx-auto max-w-4xl rounded-[2.5rem] border border-white/10 bg-white/[0.06] p-8 text-center shadow-2xl shadow-black/20 md:p-14">
+          <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#b8dce7]">
+            RSVP
+          </p>
+          <h2 className="font-serif text-5xl font-light italic md:text-7xl">
+            A sua presença importa.
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/70">
+            Em breve, este botão poderá abrir o formulário de confirmação,
+            WhatsApp ou uma página dedicada.
+          </p>
+          <a
+            href="/rsvp"
+            className="mt-10 inline-flex rounded-full bg-white px-9 py-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#173447] transition hover:-translate-y-0.5 hover:bg-[#dcecf1]"
+          >
+            Quero confirmar
+          </a>
+        </div>
+      </section>
+
+      <section id="presentes" className="bg-[#f4efe6] px-6 py-24 text-center md:px-10 md:py-32">
+        <div className="mx-auto max-w-4xl">
+          <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#3f7f97]">
+            Presentes
+          </p>
+          <h2 className="font-serif text-5xl font-light italic md:text-7xl">
+            Mais que presentes, histórias.
+          </h2>
+        </div>
+      </section>
+
+      <footer className="bg-[#082337] px-6 py-10 text-center text-white/50">
+        <p className="[font-family:var(--font-allura)] text-4xl text-white/80">
+          Jo & Web
+        </p>
+        <p className="mt-2 text-[10px] uppercase tracking-[0.32em]">
+          feito para virar memória
+        </p>
+      </footer>
+    </main>
   );
 }

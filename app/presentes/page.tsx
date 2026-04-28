@@ -1,41 +1,75 @@
-export default function Page() {
+import Image from "next/image";
+import Link from "next/link";
+import PresentesGallery from "./PresentesGallery";
+import styles from "./PresentesGallery.module.css";
+
+const navItems = [
+  { href: "/#inicio", label: "Início" },
+  { href: "/#nossa-historia", label: "Nossa História" },
+  { href: "/#o-evento", label: "O Evento" },
+  { href: "/#rsvp", label: "RSVP" },
+  { href: "/presentes", label: "Presentes" },
+];
+
+const sourcePhotos = [
+  "/hero/hero.jpg",
+  "/historia/01.jpg",
+  "/historia/02.jpg",
+  "/historia/03.jpg",
+  "/historia/04.jpg",
+  "/historia/05.jpg",
+  "/evento/local.jpg",
+];
+
+const photos = Array.from({ length: 60 }, (_, index) => ({
+  src: sourcePhotos[index % sourcePhotos.length],
+  story: `Essa é uma memória simbólica da nossa caminhada, marcada pelo carinho de quem participou da nossa história. A foto ${
+    index + 1
+  } guarda um pedacinho desse caminho e agora fica colorida para celebrar esse presente.`,
+}));
+
+export default function PresentesPage() {
   return (
-    <section className="card">
-      <span className="badge">Experiência</span>
+    <>
+      <header className="sticky left-0 top-0 z-50 w-full bg-[#082337]/82 shadow-lg shadow-black/20 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center px-5 py-5 md:px-10">
+          <Link href="/#inicio" className="group flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/35 bg-white/10 p-1 backdrop-blur-md">
+              <Image
+                src="/media/gflor-logo.svg"
+                alt="G Flor"
+                fill
+                className="object-contain p-1"
+                sizes="40px"
+              />
+            </div>
+            <div className="hidden leading-none text-white sm:block">
+              <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
+                Jo & Web
+              </p>
+            </div>
+          </Link>
 
-      <h1 className="h1">Presentes (Histórias)</h1>
-
-      <p className="p">
-        Não teremos lista de presentes tradicional. Aqui, cada presente desbloqueia uma história nossa.
-        Você escolhe uma foto, contribui e libera um capítulo do nosso álbum.
-      </p>
-
-      <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
-        <div className="card" style={{ padding: 14 }}>
-          <h2 className="h2">Como funciona</h2>
-          <p className="p">
-            Clique em uma foto → informe seu nome → escolha um valor (mínimo de <strong>R$ 100</strong>) →
-            pague via Pix ou cartão → a história é desbloqueada e seu nome aparece como quem liberou.
-          </p>
+          <nav
+            className="ml-auto hidden items-center gap-8 md:flex"
+            aria-label="Navegação principal"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-serif text-xl font-semibold italic tracking-wide !text-white opacity-100 transition [text-shadow:0_1px_10px_rgba(0,0,0,0.45)] hover:!text-[#dcecf1]"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
+      </header>
 
-        <div className="card" style={{ padding: 14 }}>
-          <h2 className="h2">Capítulo final</h2>
-          <p className="p">
-            Quando todas as histórias forem reveladas, liberaremos o capítulo final com o destino da nossa lua de mel.
-            A liberação é automática, mas o reveal só acontece com nossa aprovação antes 😉
-          </p>
-        </div>
-
-        <div className="card" style={{ padding: 14 }}>
-          <h2 className="h2">Status</h2>
-          <p className="p">Em breve: 0/60 histórias reveladas.</p>
-        </div>
-      </div>
-
-      <p className="p" style={{ marginTop: 14 }}>
-        Em breve entra no ar a primeira versão do game.
-      </p>
-    </section>
+      <main className={styles.gallerySection}>
+        <PresentesGallery photos={photos} />
+      </main>
+    </>
   );
 }
