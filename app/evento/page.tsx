@@ -65,7 +65,11 @@ export default function EventoPage() {
               />
             </span>
             <span className="[font-family:var(--font-allura)] text-3xl leading-none">
-              Jo & Web
+              Jo{" "}
+              <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
+                &
+              </span>{" "}
+              Web
             </span>
           </Link>
           <Link
@@ -89,14 +93,14 @@ export default function EventoPage() {
         </div>
         <div className="absolute inset-0 bg-[#082337]/72" />
 
-        <div className="relative mx-auto max-w-5xl text-center">
-          <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#b8dce7]">
+        <div className="relative mx-auto flex max-w-5xl flex-col items-center text-center">
+          <p className="mb-5 text-center text-xs uppercase tracking-[0.38em] text-[#b8dce7]">
             O evento
           </p>
-          <h1 className="font-serif text-5xl font-light italic leading-tight md:text-7xl">
+          <h1 className="mx-auto max-w-4xl text-center font-serif text-5xl font-light italic leading-tight md:text-7xl">
             Tudo para chegar leve e no horário.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/75">
+          <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-white/75">
             Data, local, mapa, hospedagem e cuidados para celebrar com a gente
             sem pressa, sem dúvida e com o coração inteiro no momento.
           </p>
@@ -151,19 +155,27 @@ export default function EventoPage() {
             <MapPin className="text-[#3f7f97]" />
             <h2 className="font-serif text-4xl italic">Mapa</h2>
           </div>
-          <div className="grid min-h-[360px] place-items-center rounded-[2rem] border border-[#173447]/10 bg-white/70 p-8 text-center shadow-xl shadow-[#173447]/10">
-            <div>
-              <p className="mx-auto max-w-xl leading-7 text-[#61727a]">
+          <div className="overflow-hidden rounded-[2rem] border border-[#173447]/10 bg-white/70 shadow-xl shadow-[#173447]/10">
+            <iframe
+              title="Mapa do Espaco de Eventos Abrico"
+              src="https://www.google.com/maps?q=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136&t=k&output=embed"
+              className="h-[420px] w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+            <div className="bg-[#082337] px-6 py-5 text-center">
+              <p className="sr-only" aria-label="Mapa do Espaco de Eventos Abrico em Sao Sebastiao, SP">
                 O mapa oficial entra aqui. Por enquanto, este bloco já reserva
                 o espaço para embed do Google Maps ou botão de rota.
               </p>
               <a
-                href="https://www.google.com/maps"
+                href="https://www.google.com/maps/search/?api=1&query=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-8 inline-flex rounded-full bg-[#173447] px-8 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#082337]"
+                className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.22em] !text-white shadow-xl shadow-[#173447]/18 transition hover:-translate-y-0.5 hover:bg-[#061c2b] sm:w-80"
               >
-                Abrir mapa
+                Abrir rota
               </a>
             </div>
           </div>

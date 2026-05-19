@@ -145,7 +145,11 @@ export default function RSVPPage() {
             </div>
             <div className="hidden leading-none text-white sm:block">
               <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
-                Jo & Web
+                Jo{" "}
+                <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
+                  &
+                </span>{" "}
+                Web
               </p>
             </div>
           </Link>
@@ -211,19 +215,19 @@ export default function RSVPPage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75 }}
-          className="relative mx-auto max-w-4xl text-center"
+          className="relative mx-auto flex max-w-4xl flex-col items-center text-center"
         >
-          <p className="mb-5 text-xs uppercase tracking-[0.38em] text-[#b8dce7]">
+          <p className="mb-5 text-center text-xs uppercase tracking-[0.38em] text-[#b8dce7]">
             RSVP
           </p>
-          <h1 className="font-serif text-5xl font-light italic leading-tight md:text-7xl">
+          <h1 className="mx-auto max-w-4xl text-center font-serif text-5xl font-light italic leading-tight text-balance md:text-7xl">
             A sua presença importa.
           </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/78">
+          <p className="mx-auto mt-6 max-w-3xl text-center text-lg leading-8 text-white/78 text-balance">
             Preparamos cada detalhe com muito carinho para receber você. Por
             isso, o convite é pessoal e válido apenas para os nomes indicados.
           </p>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#dcecf1]/80">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-7 text-[#dcecf1]/80 text-balance">
             Ao localizar seu convite, serão exibidos os nomes convidados para
             confirmação.
           </p>
@@ -418,7 +422,11 @@ export default function RSVPPage() {
       <footer className="bg-[#082337] px-6 py-10 text-center text-white/55">
         <Heart className="mx-auto mb-3 text-[#b8dce7]" size={20} />
         <p className="[font-family:var(--font-allura)] text-4xl text-white/85">
-          Jo & Web
+          Jo{" "}
+          <span className="[font-family:var(--font-montserrat)] text-3xl font-light">
+            &
+          </span>{" "}
+          Web
         </p>
       </footer>
     </main>

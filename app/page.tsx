@@ -120,7 +120,7 @@ export default function Home() {
   useEffect(() => {
     const timer = window.setInterval(() => {
       setActiveStory((current) => (current + 1) % storyCards.length);
-    }, 5000);
+    }, 10000);
 
     return () => window.clearInterval(timer);
   }, [storyCards.length]);
@@ -159,7 +159,11 @@ export default function Home() {
             </div>
             <div className="hidden leading-none text-white sm:block">
               <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
-                Jo & Web
+                Jo{" "}
+                <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
+                  &
+                </span>{" "}
+                Web
               </p>
             </div>
           </a>
@@ -237,7 +241,11 @@ export default function Home() {
               transition={{ duration: 1.1, delay: 0.18, ease: "easeOut" }}
               className="[font-family:var(--font-allura)] text-7xl font-light leading-[0.92] md:text-9xl lg:text-[11rem]"
             >
-              Jo <span className="text-[#b8dce7]">&</span> Web
+              Jo{" "}
+              <span className="[font-family:var(--font-montserrat)] text-[#b8dce7]">
+                &
+              </span>{" "}
+              Web
             </motion.h1>
 
             <motion.p
@@ -387,15 +395,15 @@ export default function Home() {
             </motion.p>
           </div>
 
-          <div className="mt-14 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="mx-auto mt-14 max-w-6xl">
             <motion.div
               key={currentStory.title}
-              initial={{ opacity: 0, x: -28 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
-              className="relative overflow-hidden rounded-[2.5rem] bg-[#d8c9b0] shadow-2xl shadow-[#173447]/15"
+              className="relative overflow-hidden rounded-[2rem] bg-[#d8c9b0] shadow-2xl shadow-[#173447]/15 md:rounded-[2.5rem]"
             >
-              <div className="relative h-[620px] w-full md:h-[720px] lg:h-[820px]">
+              <div className="relative h-[520px] w-full md:h-[680px] lg:h-[760px]">
                 <Image
                   src={currentStory.image}
                   alt={currentStory.title}
@@ -405,21 +413,30 @@ export default function Home() {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-[#082337]/88 via-[#173447]/24 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8 text-white md:p-12">
-                <p className="mb-4 text-xs uppercase tracking-[0.36em] text-[#b8dce7]">
+              <motion.div
+                key={`${currentStory.title}-overlay`}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45 }}
+                className="absolute bottom-0 left-0 right-0 p-7 text-white md:p-12"
+              >
+                <p className="mb-3 text-xs uppercase tracking-[0.36em] text-[#b8dce7]">
                   {currentStory.chapter}
                 </p>
-                <h3 className="font-serif text-5xl italic md:text-6xl">
+                <h3 className="font-serif text-5xl italic leading-none md:text-6xl">
                   {currentStory.title}
                 </h3>
-                <p className="mt-5 max-w-2xl text-lg leading-8 text-white/80">
+                <p className="mt-5 max-w-3xl text-base leading-7 text-white/86 md:text-lg md:leading-8">
                   {currentStory.text}
                 </p>
-              </div>
+              </motion.div>
             </motion.div>
 
-            <div className="relative flex flex-col gap-4 pl-6">
-              <div className="absolute bottom-6 left-5 top-6 hidden w-px bg-[#8bb8c7]/45 lg:block" />
+            <div
+              className="mt-8 flex items-center justify-center gap-3 sm:gap-5"
+              role="tablist"
+              aria-label="CapÃ­tulos da nossa histÃ³ria"
+            >
               {storyCards.map((card, index) => {
                 const active = index === activeStory;
 
@@ -428,34 +445,23 @@ export default function Home() {
                     key={card.title}
                     type="button"
                     onClick={() => setActiveStory(index)}
-                    className={`group relative w-full rounded-[1.35rem] border p-5 text-left transition-all duration-300 ${
+                    role="tab"
+                    aria-selected={active}
+                    aria-label={`${card.chapter}: ${card.title}`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 sm:h-14 sm:w-14 ${
                       active
-                        ? "border-[#6aa6b8] bg-white shadow-xl shadow-[#173447]/10"
-                        : "border-[#d8c9b0]/70 bg-white/55 hover:border-[#9fc7d7] hover:bg-white"
+                        ? "border-[#173447] bg-[#173447] text-white shadow-xl shadow-[#173447]/18"
+                        : "border-[#d8c9b0] bg-white/70 text-[#3f7f97] hover:border-[#9fc7d7] hover:bg-white"
                     }`}
                   >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-semibold ring-4 ring-[#f4efe6] ${
-                          active
-                            ? "bg-[#173447] text-white"
-                            : "bg-[#dcecf1] text-[#3f7f97]"
-                        }`}
-                      >
-                        {String(index + 1).padStart(2, "0")}
-                      </div>
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.28em] text-[#3f7f97]">
-                          {card.chapter}
-                        </p>
-                        <h4 className="mt-1 font-serif text-2xl italic text-[#173447]">
-                          {card.title}
-                        </h4>
-                      </div>
-                    </div>
+                    {index + 1}
                   </button>
                 );
               })}
+            </div>
+
+            <div className="sr-only" role="tabpanel">
+              {currentStory.chapter}: {currentStory.title}. {currentStory.text}
             </div>
           </div>
         </div>
@@ -514,11 +520,7 @@ export default function Home() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f4efe6]/85">
             Contagem regressiva para o grande dia
           </p>
-          <div
-            className="relative mx-auto mt-8 flex min-h-36 w-full max-w-6xl flex-nowrap overflow-hidden rounded-[2rem] bg-cover bg-center shadow-[0_28px_70px_rgba(0,0,0,0.34)]"
-            style={{ backgroundImage: "url('/media/sea-countdown.gif')" }}
-          >
-            <div className="absolute inset-0 bg-white/8" />
+          <div className="relative mx-auto mt-8 flex min-h-36 w-full max-w-6xl flex-nowrap overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.06] shadow-[0_28px_70px_rgba(0,0,0,0.22)]">
             {[
               { label: "dias", value: countdown.days },
               { label: "horas", value: countdown.hours },
@@ -529,10 +531,10 @@ export default function Home() {
                 key={item.label}
                 className="relative min-w-0 flex-1 px-1 py-4 sm:px-3 sm:py-5 md:py-7"
               >
-                <p className="font-serif text-2xl leading-none text-[#082337] drop-shadow-[0_1px_6px_rgba(255,255,255,0.75)] sm:text-3xl md:text-5xl">
+                <p className="font-serif text-2xl leading-none text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.25)] sm:text-3xl md:text-5xl">
                   {String(item.value)}
                 </p>
-                <p className="mt-2 truncate text-[8px] font-semibold uppercase tracking-[0.08em] text-[#082337] drop-shadow-[0_1px_5px_rgba(255,255,255,0.75)] sm:mt-3 sm:text-[10px] sm:tracking-[0.12em] md:text-xs">
+                <p className="mt-2 truncate text-[8px] font-semibold uppercase tracking-[0.08em] text-white/88 drop-shadow-[0_1px_7px_rgba(0,0,0,0.22)] sm:mt-3 sm:text-[10px] sm:tracking-[0.12em] md:text-xs">
                   {item.label}
                 </p>
               </div>
@@ -543,7 +545,11 @@ export default function Home() {
 
       <footer className="bg-[#082337] px-6 py-10 text-center text-white/50">
         <p className="[font-family:var(--font-allura)] text-4xl text-white/80">
-          Jo & Web
+          Jo{" "}
+          <span className="[font-family:var(--font-montserrat)] text-3xl font-light">
+            &
+          </span>{" "}
+          Web
         </p>
         <p className="mt-2 text-[10px] uppercase tracking-[0.32em]">
           feito para virar memória
