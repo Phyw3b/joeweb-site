@@ -4,6 +4,7 @@ import { Calendar, ChevronDown, Heart, MapPin, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import WeddingAccessGate from "../components/WeddingAccessGate";
 import infoStyles from "./HomeInfoFrame.module.css";
 import eventPreviewStyles from "./EventPreview.module.css";
 
@@ -293,6 +294,7 @@ export default function Home() {
         </div>
       </section>
 
+      <WeddingAccessGate>
       <section className={infoStyles.section}>
         <div className={infoStyles.layout}>
           <div className={infoStyles.leftStack}>
@@ -555,6 +557,7 @@ export default function Home() {
           feito para virar memória
         </p>
       </footer>
+      </WeddingAccessGate>
     </main>
   );
 }

@@ -1,5 +1,8 @@
+import WeddingAccessGate from "../../components/WeddingAccessGate";
+
 export default function Page() {
   return (
+    <WeddingAccessGate>
     <section className="card">
       <span className="badge">Contato</span>
 
@@ -21,5 +24,6 @@ export default function Page() {
         </div>
       </div>
     </section>
+    </WeddingAccessGate>
   );
 }

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import WeddingAccessGate from "../../components/WeddingAccessGate";
 import PresentesGallery from "./PresentesGallery";
 import styles from "./PresentesGallery.module.css";
 
@@ -71,9 +72,11 @@ export default function PresentesPage() {
         </div>
       </header>
 
-      <main className={styles.gallerySection}>
-        <PresentesGallery photos={photos} />
-      </main>
+      <WeddingAccessGate>
+        <main className={styles.gallerySection}>
+          <PresentesGallery photos={photos} />
+        </main>
+      </WeddingAccessGate>
     </>
   );
 }

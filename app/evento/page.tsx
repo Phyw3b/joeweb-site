@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import WeddingAccessGate from "../../components/WeddingAccessGate";
 import {
   CalendarDays,
   Car,
@@ -81,6 +82,7 @@ export default function EventoPage() {
         </div>
       </header>
 
+      <WeddingAccessGate>
       <section className="relative overflow-hidden bg-[#173447] px-6 py-20 text-white md:px-10 md:py-28">
         <div className="absolute inset-0 opacity-28">
           <Image
@@ -188,6 +190,7 @@ export default function EventoPage() {
           03.10.2026 · 17 horas
         </p>
       </footer>
+      </WeddingAccessGate>
     </main>
   );
 }

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import WeddingAccessGate from "../../components/WeddingAccessGate";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
@@ -207,6 +208,7 @@ export default function RSVPPage() {
         )}
       </header>
 
+      <WeddingAccessGate>
       <section className="relative overflow-hidden bg-[#082337] px-6 py-20 text-white md:px-10 md:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(184,220,231,0.26),transparent_34%),linear-gradient(135deg,#082337_0%,#173447_52%,#2b5069_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f4efe6] to-transparent" />
@@ -429,6 +431,7 @@ export default function RSVPPage() {
           Web
         </p>
       </footer>
+      </WeddingAccessGate>
     </main>
   );
 }

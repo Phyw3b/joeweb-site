@@ -1,8 +1,10 @@
 // app/historia/page.tsx
+import WeddingAccessGate from "../../components/WeddingAccessGate";
 import Historia from "../sections/Historia";
 
 export default function Page() {
   return (
+    <WeddingAccessGate>
     <section
       style={{
         maxWidth: 1120,
@@ -33,5 +35,6 @@ export default function Page() {
         </div>
       </div>
     </section>
+    </WeddingAccessGate>
   );
 }
