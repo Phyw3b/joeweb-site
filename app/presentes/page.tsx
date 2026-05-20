@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import WeddingAccessGate from "../../components/WeddingAccessGate";
+import { memories } from "../../lib/memories";
 import PresentesGallery from "./PresentesGallery";
 import styles from "./PresentesGallery.module.css";
 
@@ -8,25 +9,13 @@ const navItems = [
   { href: "/#inicio", label: "Início" },
   { href: "/#nossa-historia", label: "Nossa História" },
   { href: "/#o-evento", label: "O Evento" },
-  { href: "/#rsvp", label: "RSVP" },
+  { href: "/rsvp", label: "RSVP" },
   { href: "/presentes", label: "Presentes" },
 ];
 
-const sourcePhotos = [
-  "/hero/hero.jpg",
-  "/historia/01.jpg",
-  "/historia/02.jpg",
-  "/historia/03.jpg",
-  "/historia/04.jpg",
-  "/historia/05.jpg",
-  "/evento/local.jpg",
-];
-
-const photos = Array.from({ length: 60 }, (_, index) => ({
-  src: sourcePhotos[index % sourcePhotos.length],
-  story: `Essa é uma memória simbólica da nossa caminhada, marcada pelo carinho de quem participou da nossa história. A foto ${
-    index + 1
-  } guarda um pedacinho desse caminho e agora fica colorida para celebrar esse presente.`,
+const photos = memories.map((memory) => ({
+  id: memory.id,
+  previewSrc: memory.previewSrc,
 }));
 
 export default function PresentesPage() {
