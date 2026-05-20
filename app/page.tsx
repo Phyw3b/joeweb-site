@@ -51,7 +51,7 @@ export default function Home() {
         title: "Local",
         text: "Espaço de Eventos Abricó",
         note: "Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136",
-        href: "/evento",
+        href: "/evento#mapa",
         action: "Ver mapa",
       },
       {
@@ -266,7 +266,7 @@ export default function Home() {
               className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
             >
               <a
-                href="#rsvp"
+                href="/rsvp"
                 className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
               >
                 Confirmar presença
@@ -354,7 +354,7 @@ export default function Home() {
                 Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136
               </p>
               <a
-                href="/evento"
+                href="/evento#mapa"
                 className={infoStyles.mapButton}
               >
                 Ver mapa

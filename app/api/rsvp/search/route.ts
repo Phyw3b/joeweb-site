@@ -1,97 +1,77 @@
 import { NextResponse } from "next/server";
-import {
-  findMockInvitation,
-  getSupabaseConfig,
-  normalizeName,
-  supabaseHeaders,
-  toInvitation,
-} from "../shared";
+import { getRows, normalizeSearchText } from "../../../../lib/googleSheets";
 
-type GuestRow = {
-  invitation_id: string;
-  titular: string;
-  nome: string;
-  permite_criancas: boolean;
-};
+const notFoundMessage =
+  "Não encontramos seu convite. Confira o nome ou fale com os noivos.";
+
+function matchesSearch(value: string, search: string) {
+  const normalized = normalizeSearchText(value);
+  const tokens = normalized
+    .split(";")
+    .map((token) => token.trim())
+    .filter(Boolean);
+
+  return (
+    normalized === search ||
+    normalized.includes(search) ||
+    tokens.some((token) => token === search || token.includes(search))
+  );
+}
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => null)) as
-    | { name?: string }
-    | null;
-  const name = body?.name?.trim();
+  try {
+    const body = (await request.json().catch(() => null)) as
+      | { query?: string; name?: string }
+      | null;
+    const query = (body?.query ?? body?.name ?? "").trim();
 
-  if (!name) {
-    return NextResponse.json(
-      { error: "Informe um nome para localizar o convite." },
-      { status: 400 }
+    if (!query) {
+      return NextResponse.json(
+        { success: false, message: "Digite um nome para buscar o convite." },
+        { status: 400 }
+      );
+    }
+
+    const search = normalizeSearchText(query);
+    const rows = await getRows();
+    const match = rows.find(
+      (row) =>
+        matchesSearch(row.nomeIndividual, search) ||
+        matchesSearch(row.nomeConvite, search) ||
+        matchesSearch(row.nomesBusca, search) ||
+        matchesSearch(row.token, search)
     );
-  }
 
-  const config = getSupabaseConfig();
+    if (!match) {
+      return NextResponse.json(
+        { success: false, message: notFoundMessage },
+        { status: 404 }
+      );
+    }
 
-  if (!config) {
+    const familyRows = rows.filter((row) => row.familiaId === match.familiaId);
+    const first = familyRows[0] ?? match;
+
     return NextResponse.json({
-      convite: findMockInvitation(name),
-      source: "mock",
+      success: true,
+      familyId: match.familiaId,
+      nomeConvite: first.nomeConvite,
+      qtdConvites: first.qtdConvites || familyRows.length,
+      guests: familyRows.map((row) => ({
+        id: row.id,
+        idGenero: row.idGenero,
+        nomeIndividual: row.nomeIndividual,
+        confirmado: row.confirmado || "Não",
+        statusIndividual: row.statusIndividual || "Pendente",
+        tamanhoChinelo: row.tamanhoChinelo,
+      })),
     });
-  }
+  } catch (error) {
+    console.error("RSVP search error", error);
 
-  const search = normalizeName(name);
-  const matchUrl = new URL(
-    `${config.url}/rest/v1/${config.guestTable}`
-  );
-  matchUrl.searchParams.set(
-    "select",
-    "invitation_id,titular,nome,permite_criancas"
-  );
-  matchUrl.searchParams.set("normalized_name", `eq.${search}`);
-  matchUrl.searchParams.set("limit", "1");
-
-  const matchResponse = await fetch(matchUrl, {
-    headers: supabaseHeaders(config.key),
-    cache: "no-store",
-  });
-
-  if (!matchResponse.ok) {
     return NextResponse.json(
-      { error: "Não foi possível consultar a lista de convidados." },
+      { success: false, message: notFoundMessage },
       { status: 500 }
     );
   }
-
-  const matches = (await matchResponse.json()) as GuestRow[];
-  const match = matches[0];
-
-  if (!match) {
-    return NextResponse.json({ convite: null, source: "database" });
-  }
-
-  const guestsUrl = new URL(
-    `${config.url}/rest/v1/${config.guestTable}`
-  );
-  guestsUrl.searchParams.set(
-    "select",
-    "invitation_id,titular,nome,permite_criancas"
-  );
-  guestsUrl.searchParams.set("invitation_id", `eq.${match.invitation_id}`);
-  guestsUrl.searchParams.set("order", "nome.asc");
-
-  const guestsResponse = await fetch(guestsUrl, {
-    headers: supabaseHeaders(config.key),
-    cache: "no-store",
-  });
-
-  if (!guestsResponse.ok) {
-    return NextResponse.json(
-      { error: "Não foi possível carregar os nomes do convite." },
-      { status: 500 }
-    );
-  }
-
-  const guests = (await guestsResponse.json()) as GuestRow[];
-
-  return NextResponse.json({
-    convite: toInvitation(guests),
-    source: "database",
-  });
 }

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import HashScroller from "../../components/HashScroller";
 import WeddingAccessGate from "../../components/WeddingAccessGate";
 import {
   CalendarDays,
@@ -83,6 +84,7 @@ export default function EventoPage() {
       </header>
 
       <WeddingAccessGate>
+      <HashScroller targetId="mapa" />
       <section className="relative overflow-hidden bg-[#173447] px-6 py-20 text-white md:px-10 md:py-28">
         <div className="absolute inset-0 opacity-28">
           <Image
@@ -157,7 +159,10 @@ export default function EventoPage() {
             <MapPin className="text-[#3f7f97]" />
             <h2 className="font-serif text-4xl italic">Mapa</h2>
           </div>
-          <div className="overflow-hidden rounded-[2rem] border border-[#173447]/10 bg-white/70 shadow-xl shadow-[#173447]/10">
+          <div
+            id="mapa"
+            className="scroll-mt-28 overflow-hidden rounded-[2rem] border border-[#173447]/10 bg-white/70 shadow-xl shadow-[#173447]/10"
+          >
             <iframe
               title="Mapa do Espaco de Eventos Abrico"
               src="https://www.google.com/maps?q=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136&t=k&output=embed"

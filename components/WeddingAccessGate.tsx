@@ -58,15 +58,22 @@ export default function WeddingAccessGate({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
+      const data = (await response.json()) as { message?: string };
 
       if (!response.ok) {
-        throw new Error("invalid-password");
+        throw new Error(
+          data.message ?? "Senha incorreta. Confira no convite e tente novamente."
+        );
       }
 
       setHasAccess(true);
       setPassword("");
-    } catch {
-      setError("Senha incorreta. Confira no convite e tente novamente.");
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Senha incorreta. Confira no convite e tente novamente."
+      );
     } finally {
       setSubmitting(false);
     }

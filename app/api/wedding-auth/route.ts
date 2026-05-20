@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (password !== process.env.WEDDING_PASSWORD) {
+  if (password?.trim() !== process.env.WEDDING_PASSWORD.trim()) {
     return NextResponse.json(
       { message: "Senha incorreta. Confira no convite e tente novamente." },
       { status: 401 }

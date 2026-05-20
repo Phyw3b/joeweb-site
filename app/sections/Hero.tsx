@@ -39,7 +39,7 @@ export default function Hero() {
 
           <div className="mt-10 flex flex-wrap gap-4">
             <a
-              href="#rsvp"
+              href="/rsvp"
               className="rounded-full bg-[#263b45] px-9 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#7fa6b3]"
             >
               Confirmar presença

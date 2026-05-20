@@ -1,65 +1,51 @@
 import { NextResponse } from "next/server";
-import {
-  GuestStatus,
-  getSupabaseConfig,
-  supabaseHeaders,
-} from "../shared";
+import { updateGuestRows, UpdateGuestInput } from "../../../../lib/googleSheets";
+
+const errorMessage = "Não foi possível confirmar seu RSVP. Tente novamente.";
 
 type ConfirmBody = {
-  invitationId?: string;
-  responses?: Record<string, GuestStatus>;
+  familyId?: string;
+  guests?: GuestPayload[];
 };
 
-const isValidStatus = (value: unknown): value is GuestStatus =>
-  value === "confirmado" || value === "nao-vai";
+type GuestPayload = {
+  id?: string;
+  confirmed?: boolean;
+  tamanhoChinelo?: string;
+};
+
+function isValidGuest(value: GuestPayload): value is UpdateGuestInput {
+  return Boolean(value?.id && typeof value.confirmed === "boolean");
+}
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => null)) as ConfirmBody | null;
-  const invitationId = body?.invitationId?.trim();
-  const responses = body?.responses ?? {};
-  const entries = Object.entries(responses).filter(([, status]) =>
-    isValidStatus(status)
-  );
+  try {
+    const body = (await request.json().catch(() => null)) as ConfirmBody | null;
+    const familyId = body?.familyId?.trim();
+    const guests = (body?.guests ?? []).filter(isValidGuest);
 
-  if (!invitationId || entries.length === 0) {
-    return NextResponse.json(
-      { error: "Selecione uma resposta para cada nome do convite." },
-      { status: 400 }
-    );
-  }
-
-  const config = getSupabaseConfig();
-
-  if (!config) {
-    return NextResponse.json({ ok: true, source: "mock" });
-  }
-
-  const rows = entries.map(([guestName, status]) => ({
-    invitation_id: invitationId,
-    guest_name: guestName,
-    status,
-    responded_at: new Date().toISOString(),
-  }));
-
-  const response = await fetch(
-    `${config.url}/rest/v1/${config.responseTable}?on_conflict=invitation_id,guest_name`,
-    {
-      method: "POST",
-      headers: {
-        ...supabaseHeaders(config.key),
-        Prefer: "resolution=merge-duplicates,return=minimal",
-      },
-      body: JSON.stringify(rows),
-      cache: "no-store",
+    if (!familyId || guests.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "Selecione ao menos um convidado." },
+        { status: 400 }
+      );
     }
-  );
 
-  if (!response.ok) {
+    await updateGuestRows(familyId, guests);
+
+    return NextResponse.json({
+      success: true,
+      message: "RSVP confirmado com sucesso.",
+    });
+  } catch (error) {
+    console.error("RSVP confirm error", error);
+
     return NextResponse.json(
-      { error: "Não foi possível registrar sua resposta." },
+      {
+        success: false,
+        message: error instanceof Error ? error.message : errorMessage,
+      },
       { status: 500 }
     );
   }
-
-  return NextResponse.json({ ok: true, source: "database" });
 }
