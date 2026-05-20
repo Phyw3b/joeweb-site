@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useEffect, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 
 type WeddingAccessGateProps = {
   children: ReactNode;
@@ -14,6 +14,8 @@ export default function WeddingAccessGate({
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const accessSectionRef = useRef<HTMLElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   const isDev = process.env.NODE_ENV !== "production";
 
   useEffect(() => {
@@ -46,6 +48,33 @@ export default function WeddingAccessGate({
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (checkingAccess || hasAccess) {
+      return;
+    }
+
+    function shouldBringAccessIntoView() {
+      return window.location.pathname !== "/" || Boolean(window.location.hash);
+    }
+
+    function bringAccessIntoView() {
+      if (!shouldBringAccessIntoView()) {
+        return;
+      }
+
+      accessSectionRef.current?.scrollIntoView({
+        block: "start",
+        behavior: "smooth",
+      });
+      window.setTimeout(() => passwordInputRef.current?.focus(), 450);
+    }
+
+    bringAccessIntoView();
+    window.addEventListener("hashchange", bringAccessIntoView);
+
+    return () => window.removeEventListener("hashchange", bringAccessIntoView);
+  }, [checkingAccess, hasAccess]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -108,7 +137,11 @@ export default function WeddingAccessGate({
   }
 
   return (
-    <section className="relative overflow-hidden bg-[#f4efe6] px-6 py-20 text-[#173447] md:px-10 md:py-28">
+    <section
+      ref={accessSectionRef}
+      id="acesso-convidados"
+      className="relative scroll-mt-24 overflow-hidden bg-[#f4efe6] px-6 py-20 text-[#173447] md:px-10 md:py-28"
+    >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(159,199,215,0.32),transparent_34%),linear-gradient(180deg,#f4efe6_0%,#e6edf0_100%)]" />
       <div className="relative mx-auto max-w-xl rounded-[2rem] border border-white/80 bg-white/72 p-8 text-center shadow-2xl shadow-[#173447]/14 backdrop-blur-md md:p-10">
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.34em] text-[#3f7f97]">
@@ -127,6 +160,7 @@ export default function WeddingAccessGate({
             Senha do convite
           </label>
           <input
+            ref={passwordInputRef}
             id="wedding-password"
             type="password"
             value={password}
