@@ -25,7 +25,9 @@ type MemoryDetails = {
 
 type ApiMessage = {
   success: false;
-  message: string;
+  message?: string;
+  error?: string;
+  detail?: string;
 };
 
 const minimumGiftAmount = 100;
@@ -163,16 +165,23 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
         }),
       });
       const data = (await response.json()) as
-        | { success: true; checkoutUrl?: string }
+        | { success: true; init_point?: string; preference_id?: string }
         | ApiMessage;
 
-      if (!response.ok || !data.success || !data.checkoutUrl) {
+      if (!response.ok || !data.success || !data.init_point) {
+        const apiError =
+          "error" in data
+            ? [data.error, data.detail].filter(Boolean).join(" ")
+            : "message" in data
+              ? data.message
+              : "";
+
         throw new Error(
-          "message" in data ? data.message : "Não foi possível iniciar o pagamento."
+          apiError || "Não foi possível iniciar o pagamento."
         );
       }
 
-      window.location.href = data.checkoutUrl;
+      window.location.href = data.init_point;
     } catch (error) {
       setPaymentError(
         error instanceof Error

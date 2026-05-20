@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { approveGiftPayment } from "../../../../lib/giftsDb";
 
+export const runtime = "nodejs";
+
 const minimumGiftAmount = 100;
 
 function getPaymentId(requestUrl: string, body: unknown) {
