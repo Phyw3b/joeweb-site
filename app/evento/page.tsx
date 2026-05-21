@@ -4,60 +4,68 @@ import HashScroller from "../../components/HashScroller";
 import WeddingAccessGate from "../../components/WeddingAccessGate";
 import {
   CalendarDays,
-  Car,
-  Clock,
-  Hotel,
+  ExternalLink,
+  Gem,
+  Globe2,
+  Heart,
   MapPin,
+  MessageCircle,
+  Navigation,
+  Phone,
   Shirt,
   Sparkles,
+  Tag,
 } from "lucide-react";
 
-const details = [
+const mapEmbedUrl =
+  "https://www.google.com/maps?q=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136&t=k&output=embed";
+
+const mapRouteUrl =
+  "https://www.google.com/maps/search/?api=1&query=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136";
+
+const inspirations = [
   {
-    Icon: CalendarDays,
-    title: "Data e horário",
-    text: "03.10.2026, às 17 horas. Chegue com antecedência para viver a cerimônia com calma.",
-    note: "O sol não espera. A cerimônia exige pontualidade!",
-  },
-  {
-    Icon: MapPin,
-    title: "Local",
-    text: "Espaço de Eventos Abricó. Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136.",
-    note: "Cerimônia ao pôr do sol, pé na areia e festa na sequência.",
-  },
-  {
+    title: "Inspiração Masculina",
+    text: "Referências de looks Beach Chic para eles.",
+    href: "https://www.google.com/search?tbm=isch&q=beach+chic+masculino+casamento+praia",
     Icon: Shirt,
-    title: "Dress Code",
-    text: "Praia elegante: tecidos leves, tons claros e sapatos confortáveis para areia.",
-    note: "Evite salto fino e roupas muito escuras.",
   },
   {
-    Icon: Hotel,
-    title: "Hospedagem",
-    text: "Em breve vamos indicar opções próximas ao Espaço de Eventos Abricó para facilitar a logística.",
-    note: "Sugestões e contatos serão atualizados aqui.",
-  },
-  {
-    Icon: Car,
-    title: "Como chegar",
-    text: "Organize seu deslocamento considerando trânsito, estacionamento e horário do pôr do sol.",
-    note: "Recomendamos chegar pelo menos 40 minutos antes.",
-  },
-  {
+    title: "Inspiração Feminina",
+    text: "Referências de looks Beach Chic para elas.",
+    href: "https://www.google.com/search?tbm=isch&q=beach+chic+feminino+casamento+praia",
     Icon: Sparkles,
-    title: "Regras",
-    text: "Celebre muito, mas preserve o espaço, respeite a cerimônia e aproveite cada momento.",
-    note: "Durante a entrada, pedimos celulares discretos para manter a emoção do momento.",
+  },
+];
+
+const hotels = [
+  {
+    name: "Hotel Parceiro 1",
+    address: "Endereço do hotel",
+    site: "https://www.exemplo.com.br",
+    phone: "(00) 00000-0000",
+    coupon: "JOEWEB2026",
+    image: "/evento/hotel-parceiro-1.jpg",
+    whatsapp: "https://wa.me/5500000000000",
+  },
+  {
+    name: "Hotel Parceiro 2",
+    address: "Endereço do hotel",
+    site: "https://www.exemplo.com.br",
+    phone: "(00) 00000-0000",
+    coupon: "JOEWEB2026",
+    image: "/evento/hotel-parceiro-2.jpg",
+    whatsapp: "https://wa.me/5500000000000",
   },
 ];
 
 export default function EventoPage() {
   return (
-    <main className="min-h-screen bg-[#f4efe6] text-[#173447]">
-      <header className="bg-[#082337] px-6 py-5 text-white md:px-10">
+    <main className="min-h-screen bg-[#f7f1e8] text-[#082337]">
+      <header className="absolute left-0 top-0 z-30 w-full px-6 py-5 text-white md:px-10">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <Link href="/#inicio" className="flex items-center gap-3">
-            <span className="relative block h-10 w-10 overflow-hidden rounded-full border border-white/35 bg-white/10">
+            <span className="relative block h-10 w-10 overflow-hidden rounded-full border border-white/35 bg-white/10 backdrop-blur-md">
               <Image
                 src="/media/gflor-logo.svg"
                 alt="G Flor"
@@ -80,117 +88,284 @@ export default function EventoPage() {
       </header>
 
       <WeddingAccessGate>
-      <HashScroller targetId="mapa" />
-      <section className="relative overflow-hidden bg-[#173447] px-6 py-20 text-white md:px-10 md:py-28">
-        <div className="absolute inset-0 opacity-28">
+        <HashScroller targetId="mapa" />
+
+        <section className="relative min-h-[86vh] overflow-hidden px-6 py-28 text-white md:px-10">
           <Image
-            src="/evento/local.jpg"
-            alt=""
+            src="/evento/abrico-cerimonia.jpg"
+            alt="Casamento na praia ao pôr do sol"
             fill
             priority
             className="object-cover"
+            sizes="100vw"
           />
-        </div>
-        <div className="absolute inset-0 bg-[#082337]/72" />
+          <div className="absolute inset-0 bg-[#082337]/42" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#082337]/35 via-[#082337]/20 to-[#082337]/68" />
 
-        <div className="relative mx-auto flex max-w-5xl flex-col items-center text-center">
-          <p className="mb-5 text-center text-xs uppercase tracking-[0.38em] text-[#b8dce7]">
-            O evento
-          </p>
-          <h1 className="mx-auto max-w-4xl text-center font-serif text-5xl font-light italic leading-tight md:text-7xl">
-            Tudo para chegar leve e no horário.
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-white/75">
-            Data, local, mapa, hospedagem e cuidados para celebrar com a gente
-            sem pressa, sem dúvida e com o coração inteiro no momento.
-          </p>
-        </div>
-      </section>
-
-      <section className="px-6 py-16 md:px-10 md:py-24">
-        <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2">
-          <article className="overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-[#173447]/10">
-            <div className="relative h-80">
-              <Image
-                src="/evento/local.jpg"
-                alt="Espaço de Eventos Abricó"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
+          <div className="relative z-10 mx-auto flex min-h-[calc(86vh-14rem)] max-w-5xl flex-col items-center justify-center text-center">
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.42em] text-white/85">
+              O Grande Dia
+            </p>
+            <h1 className="max-w-4xl font-serif text-5xl font-light leading-tight text-white md:text-7xl lg:text-8xl">
+              03 de outubro de 2026
+            </h1>
+            <div className="my-6 flex w-full max-w-md items-center justify-center gap-4 text-[#d7b77a]">
+              <span className="h-px flex-1 bg-[#d7b77a]/70" />
+              <Heart size={26} strokeWidth={1.5} />
+              <span className="h-px flex-1 bg-[#d7b77a]/70" />
             </div>
-            <div className="p-8">
-              <p className="mb-3 text-xs uppercase tracking-[0.32em] text-[#3f7f97]">
-                Local
-              </p>
-              <h2 className="font-serif text-4xl italic">Espaço de Eventos Abricó</h2>
-              <p className="mt-4 leading-7 text-[#61727a]">
-                Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136. Um cenário pensado para cerimônia ao pôr do
-                sol, pé na areia e festa na sequência.
-              </p>
-            </div>
-          </article>
-
-          <div className="grid gap-6">
-            {details.map(({ Icon, title, text, note }) => (
-              <article
-                key={title}
-                className="rounded-[2rem] border border-[#173447]/10 bg-white/70 p-7 shadow-xl shadow-[#173447]/8"
+            <p className="[font-family:var(--font-great-vibes)] text-4xl leading-none text-white md:text-6xl">
+              Cerimônia ao pôr do sol
+            </p>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-white/88 md:text-lg">
+              Um dia para celebrar o amor, o mar e as pessoas que fazem parte da
+              nossa história.
+            </p>
+            <div className="mt-9 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link
+                href="/rsvp"
+                className="inline-flex h-16 w-full max-w-xs items-center justify-center rounded-full border border-white/35 bg-[#173447]/80 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#082337] sm:max-w-sm"
               >
-                <Icon className="mb-4 text-[#3f7f97]" size={26} />
-                <h2 className="font-serif text-3xl italic">{title}</h2>
-                <p className="mt-3 leading-7 text-[#61727a]">{text}</p>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[#173447]">
-                  {note}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#e6edf0] px-6 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex items-center gap-3">
-            <MapPin className="text-[#3f7f97]" />
-            <h2 className="font-serif text-4xl italic">Mapa</h2>
-          </div>
-          <div
-            id="mapa"
-            className="scroll-mt-28 overflow-hidden rounded-[2rem] border border-[#173447]/10 bg-white/70 shadow-xl shadow-[#173447]/10"
-          >
-            <iframe
-              title="Mapa do Espaco de Eventos Abrico"
-              src="https://www.google.com/maps?q=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136&t=k&output=embed"
-              className="h-[420px] w-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
-            <div className="bg-[#082337] px-6 py-5 text-center">
-              <p className="sr-only" aria-label="Mapa do Espaco de Eventos Abrico em Sao Sebastiao, SP">
-                O mapa oficial entra aqui. Por enquanto, este bloco já reserva
-                o espaço para embed do Google Maps ou botão de rota.
-              </p>
+                Confirmar presença
+              </Link>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Espa%C3%A7o%20de%20Eventos%20Abric%C3%B3%2C%20Rod.%20Dr.%20Manoel%20Hip%C3%B3lito%20do%20R%C3%AAgo%2C%202354%20-%20Praia%20do%20Arrast%C3%A3o%2C%20S%C3%A3o%20Sebasti%C3%A3o%20-%20SP%2C%2011605-136"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.22em] !text-white shadow-xl shadow-[#173447]/18 transition hover:-translate-y-0.5 hover:bg-[#061c2b] sm:w-80"
+                href="#como-chegar"
+                className="inline-flex h-16 w-full max-w-xs items-center justify-center rounded-full border border-white/70 bg-white/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-[#082337] shadow-2xl shadow-black/15 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white sm:max-w-sm"
               >
-                Abrir rota
+                Ver como chegar
               </a>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer className="bg-[#082337] px-6 py-10 text-center text-white/60">
-        <Clock className="mx-auto mb-3 text-[#b8dce7]" />
-        <p className="text-sm uppercase tracking-[0.24em]">
-          03.10.2026 · 17 horas
-        </p>
-      </footer>
+        <section className="relative overflow-hidden px-6 py-20 md:px-10 md:py-28">
+          <div className="pointer-events-none absolute -left-16 bottom-0 hidden h-80 w-80 rounded-full bg-[#d7b77a]/10 blur-3xl md:block" />
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:items-center">
+            <div>
+              <p className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#b49358]">
+                <Shirt size={22} strokeWidth={1.5} />
+                Traje
+              </p>
+              <h2 className="font-serif text-5xl font-light leading-tight md:text-7xl">
+                Beach Chic
+              </h2>
+              <div className="mt-5 h-px w-24 bg-[#d7b77a]" />
+              <p className="mt-8 max-w-sm text-base leading-8 text-[#3f5360]">
+                Elegante, leve e confortável para um casamento à beira-mar.
+              </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              {inspirations.map(({ title, text, href, Icon }) => (
+                <article
+                  key={title}
+                  className="rounded-lg border border-[#082337]/10 bg-white p-8 text-center shadow-[0_18px_60px_rgba(8,35,55,0.08)]"
+                >
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#082337] text-white">
+                    <Icon size={46} strokeWidth={1.35} />
+                  </div>
+                  <h3 className="mt-7 font-serif text-3xl leading-tight">
+                    {title}
+                  </h3>
+                  <p className="mx-auto mt-4 max-w-52 text-sm leading-7 text-[#526572]">
+                    {text}
+                  </p>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-7 inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#082337] transition hover:text-[#b49358]"
+                  >
+                    Ver inspirações
+                    <ExternalLink size={15} />
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white px-6 py-20 md:px-10 md:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#b49358]">
+                Hospedagem
+              </p>
+              <h2 className="mt-4 font-serif text-4xl font-light leading-tight md:text-6xl">
+                Nossos hotéis parceiros
+              </h2>
+              <div className="mx-auto mt-5 h-px w-24 bg-[#d7b77a]" />
+              <p className="mt-6 text-base leading-8 text-[#3f5360]">
+                Parcerias especiais para tornar sua experiência ainda mais
+                completa.
+              </p>
+            </div>
+
+            <div className="mt-12 flex flex-col items-stretch gap-8 lg:flex-row">
+              {hotels.map((hotel) => (
+                <article
+                  key={hotel.name}
+                  className="flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#082337]/10 bg-[#fffdf9] shadow-[0_18px_60px_rgba(8,35,55,0.08)] lg:basis-0 lg:flex-1"
+                >
+                  <div className="relative shrink-0 overflow-hidden">
+                    <Image
+                      src={hotel.image}
+                      alt={hotel.name}
+                      width={900}
+                      height={520}
+                      className="h-[260px] w-full object-cover"
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                    />
+                    <div className="absolute left-5 top-5 rounded bg-[#082337] px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+                      Parceria
+                      <br />
+                      exclusiva
+                    </div>
+                  </div>
+
+                  <div className="flex-1 flex flex-col p-7 md:p-8">
+                    <h3 className="font-serif text-3xl">{hotel.name}</h3>
+                    <div className="mt-5 grid gap-4 text-sm text-[#526572] sm:grid-cols-2">
+                      <p className="flex items-center gap-3">
+                        <MapPin size={17} className="text-[#b49358]" />
+                        {hotel.address}
+                      </p>
+                      <a
+                        href={hotel.site}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-3 transition hover:text-[#082337]"
+                      >
+                        <Globe2 size={17} className="text-[#b49358]" />
+                        {hotel.site.replace("https://", "")}
+                      </a>
+                      <p className="flex items-center gap-3">
+                        <Phone size={17} className="text-[#b49358]" />
+                        {hotel.phone}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto pt-8">
+                      <div className="flex min-h-24 flex-col gap-3 border-y border-[#082337]/10 py-5 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#b49358]">
+                          <Tag size={20} />
+                          Cupom de desconto
+                        </p>
+                        <p className="rounded bg-[#082337] px-5 py-3 text-center text-xs font-bold uppercase tracking-[0.16em] text-white">
+                          {hotel.coupon}
+                        </p>
+                      </div>
+
+                      <div className="mt-6 grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                        <a
+                          href={hotel.site}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex h-14 min-w-0 items-center justify-center rounded-full border border-[#082337]/35 px-4 text-center text-[11px] font-bold uppercase leading-tight tracking-[0.12em] text-[#082337] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#082337] hover:text-white xl:text-xs xl:tracking-[0.16em]"
+                        >
+                          Ver hotel
+                        </a>
+                        <a
+                          href={hotel.whatsapp}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex h-14 min-w-0 items-center justify-center gap-2 rounded-full border border-[#082337]/35 px-4 text-center text-[11px] font-bold uppercase leading-tight tracking-[0.12em] text-[#082337] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#082337] hover:text-white xl:text-xs xl:tracking-[0.16em]"
+                        >
+                          <MessageCircle size={16} className="shrink-0" />
+                          Falar no WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="como-chegar"
+          className="scroll-mt-24 bg-[#f7f1e8] px-6 py-20 md:px-10 md:py-28"
+        >
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#082337]">
+                Como chegar
+              </p>
+              <h2 className="mt-4 font-serif text-4xl font-light leading-tight md:text-6xl">
+                Estamos te esperando!
+              </h2>
+              <div className="mt-5 h-px w-24 bg-[#d7b77a]" />
+              <p className="mt-7 max-w-md text-base leading-8 text-[#3f5360]">
+                Use o mapa abaixo para traçar a melhor rota até o nosso grande
+                dia.
+              </p>
+              <a
+                href={mapRouteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-9 inline-flex h-16 w-full max-w-sm items-center justify-center gap-3 rounded-full border border-white/35 bg-[#173447]/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-[#082337]/18 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#082337]"
+              >
+                <Navigation size={17} />
+                Abrir no Google Maps
+              </a>
+            </div>
+
+            <div
+              id="mapa"
+              className="scroll-mt-28 overflow-hidden rounded-lg border border-[#082337]/10 bg-white shadow-[0_18px_60px_rgba(8,35,55,0.08)]"
+            >
+              <iframe
+                title="Mapa do Espaco de Eventos Abrico"
+                src={mapEmbedUrl}
+                className="h-[420px] w-full border-0 md:h-[520px]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="grid bg-[#082337] text-white lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="flex min-h-[520px] items-center justify-center px-6 py-20 text-center md:px-10">
+            <div className="max-w-md">
+              <Gem className="mx-auto mb-7 text-[#d7b77a]" size={42} strokeWidth={1.4} />
+              <p className="font-serif text-5xl font-light leading-tight md:text-6xl">
+                Um combinado
+              </p>
+              <p className="[font-family:var(--font-great-vibes)] text-5xl leading-none text-[#d7b77a] md:text-6xl">
+                com carinho
+              </p>
+              <p className="mx-auto mt-10 text-base leading-8 text-white/85">
+                Celebre muito, preserve o espaço, respeite a cerimônia e
+                aproveite cada momento. Esse dia foi pensado para ser vivido com
+                leveza, alegria e presença.
+              </p>
+              <p className="mt-9 [font-family:var(--font-great-vibes)] text-5xl text-[#d7b77a]">
+                Jo e Web
+              </p>
+            </div>
+          </div>
+
+          <div className="relative min-h-[420px] lg:min-h-[620px]">
+            <Image
+              src="/evento/noite-praia.jpg"
+              alt="Praia iluminada à noite"
+              fill
+              className="object-cover"
+              sizes="(min-width: 1024px) 55vw, 100vw"
+            />
+            <div className="absolute inset-0 bg-[#082337]/20" />
+          </div>
+        </section>
+
+        <footer className="bg-[#061c2b] px-6 py-8 text-center text-white/60">
+          <CalendarDays className="mx-auto mb-3 text-[#d7b77a]" size={20} />
+          <p className="text-xs font-semibold uppercase tracking-[0.24em]">
+            03.10.2026 · 16h30
+          </p>
+        </footer>
       </WeddingAccessGate>
     </main>
   );

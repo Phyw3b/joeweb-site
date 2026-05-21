@@ -135,8 +135,8 @@ export default function RSVPPage() {
                   </h2>
                   <p className="mt-3 leading-7 text-[#61727a]">
                     Para que todos possam aproveitar a celebração com
-                    tranquilidade, o evento será voltado ao público adulto, com
-                    algumas exceções previamente combinadas.
+                    tranquilidade, o evento será voltado ao público adulto. Não
+                    teremos estrutura para crianças.
                   </p>
                 </div>
               </div>

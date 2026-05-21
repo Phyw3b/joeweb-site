@@ -8,7 +8,7 @@ import WeddingAccessGate from "../components/WeddingAccessGate";
 import infoStyles from "./HomeInfoFrame.module.css";
 import eventPreviewStyles from "./EventPreview.module.css";
 
-const WEDDING_DATE = new Date("2026-10-03T16:00:00-03:00");
+const WEDDING_DATE = new Date("2026-10-03T16:30:00-03:00");
 const INITIAL_COUNTDOWN = {
   days: 0,
   hours: 0,
@@ -43,16 +43,13 @@ export default function Home() {
       {
         Icon: Calendar,
         title: "Data",
-        text: "03.10.2026 ás 17 horas",
+        text: "03.10.2026 às 16h30",
         note: "O sol não espera. A cerimônia exige pontualidade!",
       },
       {
         Icon: MapPin,
         title: "Local",
         text: "Espaço de Eventos Abricó",
-        note: "Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136",
-        href: "/evento#mapa",
-        action: "Ver mapa",
       },
       {
         Icon: Heart,
@@ -216,9 +213,9 @@ export default function Home() {
       <section id="inicio" className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
           <div
-            className="h-full w-full scale-105 bg-cover bg-center"
+            className="h-full w-full scale-105 bg-cover bg-[position:42%_center] md:bg-center"
             style={{
-              backgroundImage: "url('/hero/hero.jpg')",
+              backgroundImage: "url('/hero/Hero.jpg')",
               transform: `scale(1.08) translateY(${scrollY * 0.08}px)`,
             }}
           />
@@ -342,14 +339,19 @@ export default function Home() {
               <p className={infoStyles.text}>
                 Espaço de Eventos Abricó
               </p>
-              <p className={infoStyles.note}>
-                Rod. Dr. Manoel Hipólito do Rêgo, 2354 - Praia do Arrastão, São Sebastião - SP, CEP: 11605-136
-              </p>
               <a
                 href="/evento#mapa"
-                className={infoStyles.mapButton}
+                className={infoStyles.localImageFrame}
+                aria-label="Ver mapa do Espaço de Eventos Abricó"
               >
-                Ver mapa
+                <Image
+                  src="/evento/abrico-cerimonia.jpg"
+                  alt="Cerimônia no Espaço de Eventos Abricó"
+                  fill
+                  sizes="(min-width: 900px) 520px, 100vw"
+                  className={infoStyles.localImage}
+                />
+                <div className={infoStyles.localImageShade} />
               </a>
             </div>
           </motion.div>
@@ -506,6 +508,12 @@ export default function Home() {
           <h2 className="font-serif text-5xl font-light italic md:text-7xl">
             Mais que presentes, histórias.
           </h2>
+          <a
+            href="/presentes"
+            className="mt-10 inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-xl shadow-[#173447]/18 transition hover:-translate-y-0.5 hover:bg-[#082337] sm:w-80"
+          >
+            Ver presentes
+          </a>
         </div>
       </section>
 

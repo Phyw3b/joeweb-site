@@ -29,7 +29,7 @@ function isValidMercadoPagoSignature(request: Request, paymentId: string) {
   const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
 
   if (!secret) {
-    return true;
+    return process.env.NODE_ENV !== "production";
   }
 
   const signature = request.headers.get("x-signature");

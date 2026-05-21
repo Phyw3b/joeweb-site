@@ -40,6 +40,10 @@ function errorResponse(error: string, detail: string, status: number) {
   return NextResponse.json({ success: false, error, detail }, { status });
 }
 
+function publicPaymentError(detail: string, status = 502) {
+  return errorResponse("Não foi possível iniciar o pagamento.", detail, status);
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json().catch(() => null)) as
@@ -88,15 +92,19 @@ export async function POST(request: Request) {
     }
 
     if (!siteUrl || !mercadoPagoToken || !hasDatabaseUrl) {
-      return errorResponse(
-        "Pagamento ainda não configurado.",
-        `missing_env:${[
+      console.error("create-payment: missing required payment configuration", {
+        missing: [
           !siteUrl ? "NEXT_PUBLIC_SITE_URL" : "",
           !mercadoPagoToken ? "MERCADO_PAGO_ACCESS_TOKEN" : "",
           !hasDatabaseUrl ? "DATABASE_URL" : "",
         ]
           .filter(Boolean)
-          .join(",")}`,
+          .join(","),
+      });
+
+      return errorResponse(
+        "Pagamento ainda não configurado.",
+        "payment_not_configured",
         500
       );
     }
@@ -161,11 +169,7 @@ export async function POST(request: Request) {
         hasPreferenceId: Boolean(preference.id),
       });
 
-      return errorResponse(
-        "Não foi possível iniciar o pagamento.",
-        `mercado_pago:${detail}`,
-        502
-      );
+      return publicPaymentError("payment_provider_unavailable");
     }
 
     await createGiftPayment({
@@ -180,11 +184,7 @@ export async function POST(request: Request) {
     const initPoint = preference.init_point ?? preference.sandbox_init_point;
 
     if (!initPoint) {
-      return errorResponse(
-        "Não foi possível iniciar o pagamento.",
-        "mercado_pago_missing_init_point",
-        502
-      );
+      return publicPaymentError("payment_provider_unavailable");
     }
 
     return NextResponse.json({
@@ -196,10 +196,6 @@ export async function POST(request: Request) {
     const detail = error instanceof Error ? error.message : "unknown_error";
     console.error("create-payment: unexpected error", { detail });
 
-    return errorResponse(
-      "Não foi possível iniciar o pagamento.",
-      detail,
-      500
-    );
+    return publicPaymentError("payment_unavailable", 500);
   }
 }
