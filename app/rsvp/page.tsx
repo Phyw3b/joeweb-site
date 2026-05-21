@@ -34,12 +34,8 @@ export default function RSVPPage() {
               />
             </div>
             <div className="hidden leading-none text-white sm:block">
-              <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
-                Jo{" "}
-                <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
-                  &
-                </span>{" "}
-                Web
+              <p className="[font-family:var(--font-great-vibes)] text-3xl leading-none tracking-wide">
+                Jo e Web
               </p>
             </div>
           </Link>
@@ -150,12 +146,8 @@ export default function RSVPPage() {
 
         <footer className="bg-[#082337] px-6 py-10 text-center text-white/55">
           <Heart className="mx-auto mb-3 text-[#b8dce7]" size={20} />
-          <p className="[font-family:var(--font-allura)] text-4xl text-white/85">
-            Jo{" "}
-            <span className="[font-family:var(--font-montserrat)] text-3xl font-light">
-              &
-            </span>{" "}
-            Web
+          <p className="[font-family:var(--font-great-vibes)] text-4xl text-white/85">
+            Jo e Web
           </p>
         </footer>
       </WeddingAccessGate>

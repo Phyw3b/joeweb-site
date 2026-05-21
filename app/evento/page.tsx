@@ -66,12 +66,8 @@ export default function EventoPage() {
                 sizes="40px"
               />
             </span>
-            <span className="[font-family:var(--font-allura)] text-3xl leading-none">
-              Jo{" "}
-              <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
-                &
-              </span>{" "}
-              Web
+            <span className="[font-family:var(--font-great-vibes)] text-3xl leading-none">
+              Jo e Web
             </span>
           </Link>
           <Link

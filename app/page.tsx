@@ -159,12 +159,8 @@ export default function Home() {
               />
             </div>
             <div className="hidden leading-none text-white sm:block">
-              <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
-                Jo{" "}
-                <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
-                  &
-                </span>{" "}
-                Web
+              <p className="[font-family:var(--font-great-vibes)] text-3xl leading-none tracking-wide">
+                Jo e Web
               </p>
             </div>
           </a>
@@ -240,20 +236,16 @@ export default function Home() {
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.1, delay: 0.18, ease: "easeOut" }}
-              className="[font-family:var(--font-allura)] text-7xl font-light leading-[0.92] md:text-9xl lg:text-[11rem]"
+              className="[font-family:var(--font-great-vibes)] pb-8 text-7xl font-light leading-[1.08] md:pb-10 md:text-9xl lg:pb-12 lg:text-[11rem]"
             >
-              Jo{" "}
-              <span className="[font-family:var(--font-montserrat)] text-[#b8dce7]">
-                &
-              </span>{" "}
-              Web
+              Jo e Web
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.38, ease: "easeOut" }}
-              className="mx-auto mt-8 max-w-3xl text-lg font-light leading-8 text-white/85 md:text-2xl md:leading-10"
+              className="mx-auto mt-0 max-w-3xl text-lg font-light leading-8 text-white/85 md:text-2xl md:leading-10"
             >
               Duas histórias, um destino e o começo de um novo capítulo diante
               do mar.
@@ -546,12 +538,8 @@ export default function Home() {
       </section>
 
       <footer className="bg-[#082337] px-6 py-10 text-center text-white/50">
-        <p className="[font-family:var(--font-allura)] text-4xl text-white/80">
-          Jo{" "}
-          <span className="[font-family:var(--font-montserrat)] text-3xl font-light">
-            &
-          </span>{" "}
-          Web
+        <p className="[font-family:var(--font-great-vibes)] text-4xl text-white/80">
+          Jo e Web
         </p>
         <p className="mt-2 text-[10px] uppercase tracking-[0.32em]">
           feito para virar memória

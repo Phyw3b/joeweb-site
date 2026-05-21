@@ -34,12 +34,8 @@ export default function PresentesPage() {
               />
             </div>
             <div className="hidden leading-none text-white sm:block">
-              <p className="[font-family:var(--font-allura)] text-3xl leading-none tracking-wide">
-                Jo{" "}
-                <span className="[font-family:var(--font-montserrat)] text-2xl font-light">
-                  &
-                </span>{" "}
-                Web
+              <p className="[font-family:var(--font-great-vibes)] text-3xl leading-none tracking-wide">
+                Jo e Web
               </p>
             </div>
           </Link>

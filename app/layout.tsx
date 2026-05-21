@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Allura, Montserrat } from "next/font/google";
+import { Great_Vibes, Montserrat } from "next/font/google";
 import "./globals.css";
 
-const allura = Allura({
+const greatVibes = Great_Vibes({
   subsets: ["latin"],
   weight: "400",
-  variable: "--font-allura",
+  variable: "--font-great-vibes",
 });
 
 const montserrat = Montserrat({
@@ -14,9 +14,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Jo & Web | Casamento",
+  title: "Jo e Web | Casamento",
   description:
-    "Site oficial do casamento Jo & Web: informações do evento, RSVP e presentes.",
+    "Site oficial do casamento Jo e Web: informações do evento, RSVP e presentes.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${allura.variable} ${montserrat.variable}`}>
+      <body className={`${greatVibes.variable} ${montserrat.variable}`}>
         {children}
       </body>
     </html>
