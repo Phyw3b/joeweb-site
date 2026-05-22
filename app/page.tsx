@@ -215,7 +215,7 @@ export default function Home() {
           <div
             className="h-full w-full scale-105 bg-cover bg-[position:42%_center] md:bg-center"
             style={{
-              backgroundImage: "url('/hero/Hero.jpg')",
+              backgroundImage: "url('/hero/hero.jpg')",
               transform: `scale(1.08) translateY(${scrollY * 0.08}px)`,
             }}
           />

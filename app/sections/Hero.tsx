@@ -62,7 +62,7 @@ export default function Hero() {
         >
           <div className="relative h-full w-full overflow-hidden rounded-[2.8rem] bg-[#d7e8ee]">
             <Image
-              src="/hero/Hero.jpg"
+              src="/hero/hero.jpg"
               alt="Jo e Web"
               fill
               priority
