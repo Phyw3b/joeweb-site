@@ -63,34 +63,34 @@ export default function Home() {
   const storyCards = useMemo(
     () => [
       {
-        chapter: "Capítulo 01",
-        title: "O encontro",
-        text: "Toda história grande começa com um detalhe pequeno: um olhar, uma conversa, uma coincidência que depois parece destino.",
-        image: "/historia/01.jpg",
+        chapter: "CAPÍTULO I",
+        title: "O Começo",
+        text: "Tudo começou quando ainda éramos muito jovens. Não imaginávamos os caminhos que a vida nos levaria. Nem que aquela história atravessaria décadas. Mas algumas escolhas simplesmente ficam.",
+        image: "/historia/carrossel-01.jpeg",
       },
       {
-        chapter: "Capítulo 02",
-        title: "A conexão",
-        text: "Entre risadas, afinidades e planos surgindo sem pressa, a vida começou a mostrar que tinha algo especial ali.",
-        image: "/historia/02.jpg",
+        chapter: "CAPÍTULO II",
+        title: "Construindo Sonhos",
+        text: "Com o tempo vieram os planos. Vieram as responsabilidades. E veio a certeza de que queríamos seguir a mesma direção. Foi quando começamos a construir uma vida juntos.",
+        image: "/historia/carrossel-02.jpeg",
       },
       {
-        chapter: "Capítulo 03",
-        title: "As memórias",
-        text: "Viagens, família, amigos e pequenos rituais foram virando a base de tudo que somos juntos.",
-        image: "/historia/03.jpg",
+        chapter: "CAPÍTULO III",
+        title: "O Primeiro Sim",
+        text: "Algumas decisões mudam completamente o rumo da história. A nossa foi dizer sim um ao outro. Não apenas naquele dia. Mas todos os dias depois dele.",
+        image: "/historia/carrossel-03.jpeg",
       },
       {
-        chapter: "Capítulo 04",
-        title: "O sim",
-        text: "O momento em que a escolha virou promessa. Não como ponto final, mas como início de uma fase ainda mais bonita.",
-        image: "/historia/04.jpg",
+        chapter: "CAPÍTULO IV",
+        title: "O Maior Presente",
+        text: "Então nossa história ganhou um novo significado. O casal se transformou em família. E o amor encontrou uma nova forma de existir. Através da Luiza.",
+        image: "/historia/carrossel-04.jpeg",
       },
       {
-        chapter: "Capítulo 05",
-        title: "O nosso para sempre",
-        text: "Agora chegou a hora de celebrar com quem fez parte da caminhada. Esse dia também é sobre vocês conosco.",
-        image: "/historia/05.jpg",
+        chapter: "CAPÍTULO V",
+        title: "Ainda Nós",
+        text: "A vida passou. Mudamos por fora. Crescemos por dentro. Vivemos capítulos que nunca imaginamos. Mas continuamos escolhendo caminhar lado a lado.",
+        image: "/historia/carrossel-05.jpeg",
       },
     ],
     []
@@ -287,77 +287,45 @@ export default function Home() {
 
       <WeddingAccessGate>
       <section className={infoStyles.section}>
-        <div className={infoStyles.layout}>
-          <div className={infoStyles.leftStack}>
-            {[infoCards[0], infoCards[2]].map(({ Icon, title, text, note }) => (
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-                className={infoStyles.card}
-              >
-                <div className={infoStyles.panel}>
-                  <Icon className={infoStyles.icon} size={28} />
-                  <h3
-                    className={`${infoStyles.title} ${
-                      title === "Data" ? infoStyles.dataTitle : ""
-                    }`}
-                  >
-                    {title}
-                  </h3>
-                  <p
-                    className={`${infoStyles.text} ${
-                      title === "Data" ? infoStyles.dataText : ""
-                    }`}
-                  >
-                    {text}
-                  </p>
-                  {note && (
-                    <p
-                      className={`${infoStyles.note} ${
-                        title === "Data" ? infoStyles.dataNote : ""
-                      }`}
-                    >
-                      {note}
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className={infoStyles.layout}
+        >
+          <div className={infoStyles.infoItem}>
+            <Calendar className={infoStyles.icon} size={32} strokeWidth={1.35} />
+            <p className={infoStyles.label}>Data</p>
+            <p className={infoStyles.primary}>03.10.2026</p>
+            <p className={infoStyles.secondary}>às 16h30</p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.08 }}
-            className={`${infoStyles.card} ${infoStyles.localCard}`}
+          <div className={infoStyles.divider} aria-hidden="true">
+            <span />
+          </div>
+
+          <a
+            href="/evento#mapa"
+            className={infoStyles.infoItem}
+            aria-label="Ver mapa do Espaço de Eventos Abricó"
           >
-            <div className={`${infoStyles.panel} ${infoStyles.localPanel}`}>
-              <MapPin className={infoStyles.icon} size={28} />
-              <h3 className={infoStyles.title}>Local</h3>
-              <p className={infoStyles.text}>
-                Espaço de Eventos Abricó
-              </p>
-              <a
-                href="/evento#mapa"
-                className={infoStyles.localImageFrame}
-                aria-label="Ver mapa do Espaço de Eventos Abricó"
-              >
-                <Image
-                  src="/evento/abrico-cerimonia.jpg"
-                  alt="Cerimônia no Espaço de Eventos Abricó"
-                  fill
-                  sizes="(min-width: 900px) 520px, 100vw"
-                  className={infoStyles.localImage}
-                />
-                <div className={infoStyles.localImageShade} />
-              </a>
-            </div>
-          </motion.div>
-        </div>
+            <MapPin className={infoStyles.icon} size={36} strokeWidth={1.35} />
+            <p className={infoStyles.label}>Local</p>
+            <p className={infoStyles.primary}>Espaço Abricó</p>
+            <p className={infoStyles.secondary}>São Sebastião • SP</p>
+          </a>
+
+          <div className={infoStyles.divider} aria-hidden="true">
+            <span />
+          </div>
+
+          <div className={infoStyles.infoItem}>
+            <Heart className={infoStyles.icon} size={34} strokeWidth={1.35} />
+            <p className={infoStyles.label}>Vibes</p>
+            <p className={infoStyles.vibesText}>Pôr do sol,<br />pé na areia e<br />uma noite para celebrar.</p>
+          </div>
+        </motion.div>
       </section>
 
       <section
@@ -401,12 +369,20 @@ export default function Home() {
               transition={{ duration: 0.55 }}
               className="relative overflow-hidden rounded-[2rem] bg-[#d8c9b0] shadow-2xl shadow-[#173447]/15 md:rounded-[2.5rem]"
             >
-              <div className="relative h-[520px] w-full md:h-[680px] lg:h-[760px]">
+              <div className="relative h-[520px] w-full bg-[#173447] md:h-[680px] lg:h-[760px]">
+                <Image
+                  src={currentStory.image}
+                  alt=""
+                  fill
+                  aria-hidden="true"
+                  className="scale-105 object-cover opacity-45 blur-xl"
+                  sizes="(max-width: 1024px) 100vw, 1100px"
+                />
                 <Image
                   src={currentStory.image}
                   alt={currentStory.title}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 1024px) 100vw, 1100px"
                 />
               </div>
