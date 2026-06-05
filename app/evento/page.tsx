@@ -38,24 +38,39 @@ const inspirations = [
   },
 ];
 
-const hotels = [
+const weddingPartyDressCode = [
   {
-    name: "Hotel Parceiro 1",
-    address: "Endereço do hotel",
-    site: "https://www.exemplo.com.br",
-    phone: "(00) 00000-0000",
-    coupon: "JOEWEB2026",
-    image: "/evento/hotel-parceiro-1.jpg",
-    whatsapp: "https://wa.me/5500000000000",
+    title: "Padrinhos",
+    text: "Os padrinhos estar&atilde;o vestidos com cal&ccedil;a de sarja cinza e camisa branca, em um estilo leve e elegante. Nos p&eacute;s, conforto em primeiro lugar: papetes, sapat&ecirc;nis ou chinelos em tons neutros.",
+    image: "/evento/padrinhos-dresscode.png",
+    alt: "Ilustracao de calca e paleta cinza dos padrinhos",
   },
   {
-    name: "Hotel Parceiro 2",
-    address: "Endereço do hotel",
-    site: "https://www.exemplo.com.br",
-    phone: "(00) 00000-0000",
-    coupon: "JOEWEB2026",
+    title: "Madrinhas",
+    text: "As madrinhas usar&atilde;o vestidos longos em tons de azul serenity, compondo uma paleta suave e elegante inspirada no mar. Os cal&ccedil;ados ser&atilde;o livres, priorizando conforto e leveza para aproveitar a cerim&ocirc;nia na praia.",
+    image: "/evento/madrinhas-dresscode.png",
+    alt: "Ilustracao de vestidos e paleta azul serenity das madrinhas",
+  },
+];
+
+const hotels = [
+  {
+    name: "Abricó Beach Hotel",
+    address: "Av. Manoel Hipólito do Rêgo, 323 - Praia Deserta, São Sebastião - SP, 11608-000",
+    site: "https://www.abricobeachhotel.com.br/",
+    phone: "(12) 98257-0001",
+    coupon: "JOSEWEB10",
+    image: "/evento/hotel-parceiro-1.jpg",
+    whatsapp: "https://wa.me/5512982570001",
+  },
+  {
+    name: "Hotel Arrastão",
+    address: "Av. Dr. Manoel Hipólito Rego, 2097, Arrastão, São Sebastião - SP - 11605-136",
+    site: "https://www.hotelarrastao.tur.br/index.php",
+    phone: "(12) 3862-0099",
+    coupon: "Joseane e Weberson",
     image: "/evento/hotel-parceiro-2.jpg",
-    whatsapp: "https://wa.me/5500000000000",
+    whatsapp: "https://wa.me/551238620099",
   },
 ];
 
@@ -130,7 +145,7 @@ export default function EventoPage() {
               </Link>
               <a
                 href="#como-chegar"
-                className="inline-flex h-16 w-full max-w-xs items-center justify-center rounded-full border border-white/70 bg-white/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-[#082337] shadow-2xl shadow-black/15 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white sm:max-w-sm"
+                className="inline-flex h-16 w-full max-w-xs items-center justify-center rounded-full border border-white/35 bg-[#173447]/80 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#082337] sm:max-w-sm"
               >
                 Ver como chegar
               </a>
@@ -179,6 +194,58 @@ export default function EventoPage() {
                     Ver inspirações
                     <ExternalLink size={15} />
                   </a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#f7f1e8] px-6 py-20 md:px-10 md:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#b49358]">
+                Paleta especial
+              </p>
+              <h2 className="mt-4 font-serif text-4xl font-light leading-tight md:text-6xl">
+                Os padrinhos vestem...
+              </h2>
+              <div className="mx-auto mt-5 h-px w-24 bg-[#d7b77a]" />
+              <p className="mt-6 text-base leading-8 text-[#3f5360]">
+                Para harmonizar com o cen&aacute;rio &agrave; beira-mar, nossos padrinhos e
+                madrinhas seguir&atilde;o uma paleta especial.
+              </p>
+            </div>
+
+            <div className="mt-12 flex flex-col items-stretch justify-center gap-8 lg:flex-row">
+              {weddingPartyDressCode.map(({ title, text, image, alt }) => (
+                <article
+                  key={title}
+                  className="flex h-full min-w-0 flex-col rounded-lg border border-[#082337]/10 bg-[#fffdf9] p-8 text-center shadow-[0_18px_60px_rgba(8,35,55,0.08)] lg:basis-0 lg:flex-1"
+                >
+                  <h3 className="font-serif text-4xl font-light leading-tight">
+                    {title}
+                  </h3>
+                  {text && (
+                    <p
+                      className="mx-auto mt-5 max-w-md text-sm leading-7 text-[#526572] md:text-base md:leading-8"
+                      dangerouslySetInnerHTML={{ __html: text }}
+                    />
+                  )}
+                  <div className="mt-auto pt-8">
+                    <div className="flex h-[360px] items-center justify-center overflow-hidden rounded-lg bg-white shadow-inner shadow-[#082337]/5 sm:h-[420px] lg:h-[380px] xl:h-[440px]">
+                    <Image
+                      src={image}
+                      alt={alt}
+                      width={title === "Padrinhos" ? 520 : 520}
+                      height={title === "Padrinhos" ? 230 : 640}
+                      className={
+                        title === "Padrinhos"
+                          ? "h-auto w-[64%] max-w-sm object-contain"
+                          : "h-full w-full object-contain"
+                      }
+                    />
+                    </div>
+                  </div>
                 </article>
               ))}
             </div>
@@ -251,7 +318,7 @@ export default function EventoPage() {
                           <Tag size={20} />
                           Cupom de desconto
                         </p>
-                        <p className="rounded bg-[#082337] px-5 py-3 text-center text-xs font-bold uppercase tracking-[0.16em] text-white">
+                        <p className="rounded bg-[#082337] px-5 py-3 text-center text-xs font-bold uppercase leading-relaxed tracking-[0.12em] text-white">
                           {hotel.coupon}
                         </p>
                       </div>
@@ -261,7 +328,7 @@ export default function EventoPage() {
                           href={hotel.site}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex h-14 min-w-0 items-center justify-center rounded-full border border-[#082337]/35 px-4 text-center text-[11px] font-bold uppercase leading-tight tracking-[0.12em] text-[#082337] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#082337] hover:text-white xl:text-xs xl:tracking-[0.16em]"
+                          className="inline-flex h-14 min-w-0 items-center justify-center rounded-full border border-[#082337]/35 px-4 text-center text-[11px] font-bold uppercase leading-tight tracking-[0.12em] text-[#082337] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#082337] hover:!text-white xl:text-xs xl:tracking-[0.16em]"
                         >
                           Ver hotel
                         </a>
@@ -269,7 +336,7 @@ export default function EventoPage() {
                           href={hotel.whatsapp}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex h-14 min-w-0 items-center justify-center gap-2 rounded-full border border-[#082337]/35 px-4 text-center text-[11px] font-bold uppercase leading-tight tracking-[0.12em] text-[#082337] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#082337] hover:text-white xl:text-xs xl:tracking-[0.16em]"
+                          className="inline-flex h-14 min-w-0 items-center justify-center gap-2 rounded-full border border-[#082337]/35 px-4 text-center text-[11px] font-bold uppercase leading-tight tracking-[0.12em] text-[#082337] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#082337] hover:!text-white xl:text-xs xl:tracking-[0.16em]"
                         >
                           <MessageCircle size={16} className="shrink-0" />
                           Falar no WhatsApp
@@ -304,7 +371,7 @@ export default function EventoPage() {
                 href={mapRouteUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-9 inline-flex h-16 w-full max-w-sm items-center justify-center gap-3 rounded-full border border-white/35 bg-[#173447]/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-[#082337]/18 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#082337]"
+                className="mt-9 inline-flex h-16 w-full max-w-sm items-center justify-center gap-3 rounded-full border border-white/35 bg-[#173447]/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] !text-[#f4efe6] shadow-2xl shadow-[#082337]/18 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#082337] hover:!text-white"
               >
                 <Navigation size={17} />
                 Abrir no Google Maps
@@ -342,7 +409,7 @@ export default function EventoPage() {
                 aproveite cada momento. Esse dia foi pensado para ser vivido com
                 leveza, alegria e presença.
               </p>
-              <p className="mt-9 [font-family:var(--font-great-vibes)] text-5xl text-[#d7b77a]">
+              <p className="mt-14 [font-family:var(--font-great-vibes)] text-5xl text-[#d7b77a] md:mt-16">
                 Jo e Web
               </p>
             </div>
@@ -350,7 +417,7 @@ export default function EventoPage() {
 
           <div className="relative min-h-[420px] lg:min-h-[620px]">
             <Image
-              src="/evento/noite-praia.jpg"
+              src="/evento/noite-praia.png"
               alt="Praia iluminada à noite"
               fill
               className="object-cover"

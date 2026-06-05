@@ -126,6 +126,8 @@ export default function Home() {
   const getAnchor = (item: string) =>
     item === "Presentes"
       ? "/presentes"
+      : item === "O Evento"
+        ? "/evento"
       :
     `#${item
       .toLowerCase()
@@ -256,13 +258,13 @@ export default function Home() {
             >
               <a
                 href="/rsvp"
-                className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
+                className="[font-family:var(--font-montserrat)] inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
               >
                 Confirmar presença
               </a>
               <a
                 href="#o-evento"
-                className="inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
+                className="[font-family:var(--font-montserrat)] inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
               >
                 Ver detalhes
               </a>
@@ -493,7 +495,7 @@ export default function Home() {
           </h2>
           <a
             href="/rsvp"
-            className="mt-10 inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
+            className="[font-family:var(--font-montserrat)] mt-10 inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] sm:w-80"
           >
             Quero confirmar
           </a>
@@ -510,7 +512,7 @@ export default function Home() {
           </h2>
           <a
             href="/presentes"
-            className="mt-10 inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/90 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-xl shadow-[#173447]/18 transition hover:-translate-y-0.5 hover:bg-[#082337] sm:w-80"
+            className="[font-family:var(--font-montserrat)] mt-10 inline-flex h-16 w-72 items-center justify-center rounded-full border border-white/35 bg-[#173447]/60 px-8 text-sm font-semibold uppercase tracking-[0.22em] !text-[#f4efe6] shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#173447] hover:!text-white sm:w-80"
           >
             Ver presentes
           </a>
