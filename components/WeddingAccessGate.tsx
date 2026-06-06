@@ -29,7 +29,13 @@ export default function WeddingAccessGate({
         const data = (await response.json()) as { authenticated?: boolean };
 
         if (active) {
-          setHasAccess(Boolean(data.authenticated));
+          const authenticated = Boolean(data.authenticated);
+
+          setHasAccess(authenticated);
+
+          if (authenticated) {
+            window.dispatchEvent(new Event("wedding-access-granted"));
+          }
         }
       } catch {
         if (active) {
