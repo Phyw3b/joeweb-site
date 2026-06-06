@@ -35,6 +35,8 @@
 }
 
 .galleryImage {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
@@ -45,9 +47,31 @@
     transform 320ms ease;
 }
 
+.galleryImageBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 0.58;
+  transform: scale(1.12);
+  transition:
+    filter 320ms ease,
+    opacity 320ms ease,
+    transform 320ms ease;
+}
+
 .galleryItem:hover .galleryImage {
   filter: grayscale(1) brightness(0.88) contrast(1.12);
   transform: scale(1.025);
+}
+
+.galleryItem:hover .galleryImageBackdrop {
+  opacity: 0.72;
+  transform: scale(1.16);
 }
 
 .lockedImage {
@@ -56,6 +80,14 @@
 
 .unlockedImage {
   filter: grayscale(0) brightness(1);
+}
+
+.galleryImageBackdrop.lockedImage {
+  filter: grayscale(1) brightness(0.46) contrast(1.12) blur(14px);
+}
+
+.galleryImageBackdrop.unlockedImage {
+  filter: grayscale(0) brightness(0.72) blur(14px);
 }
 
 .unlockedName {

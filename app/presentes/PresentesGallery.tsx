@@ -257,6 +257,14 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
             >
               <img
                 src={photo.previewSrc}
+                alt=""
+                aria-hidden="true"
+                className={`${styles.galleryImageBackdrop} ${
+                  unlocked ? styles.unlockedImage : styles.lockedImage
+                }`}
+              />
+              <img
+                src={photo.previewSrc}
                 alt={`Memória ${photo.id}`}
                 className={`${styles.galleryImage} ${
                   unlocked ? styles.unlockedImage : styles.lockedImage
