@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { updateGuestRows, UpdateGuestInput } from "../../../../lib/googleSheets";
+import {
+  isRsvpClosed,
+  rsvpAdvisor,
+  rsvpClosedCode,
+  rsvpClosedMessage,
+} from "../../../../lib/rsvpDeadline";
 
 const errorMessage = "Não foi possível confirmar seu RSVP. Tente novamente.";
 
@@ -23,6 +29,20 @@ export async function POST(request: Request) {
     const body = (await request.json().catch(() => null)) as ConfirmBody | null;
     const familyId = body?.familyId?.trim();
     const guests = (body?.guests ?? []).filter(isValidGuest);
+
+    if (isRsvpClosed()) {
+      console.info("RSVP confirm blocked after deadline", { familyId });
+
+      return NextResponse.json(
+        {
+          success: false,
+          code: rsvpClosedCode,
+          message: rsvpClosedMessage,
+          advisor: rsvpAdvisor,
+        },
+        { status: 403 }
+      );
+    }
 
     if (!familyId || guests.length === 0) {
       return NextResponse.json(

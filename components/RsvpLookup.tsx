@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { CheckCircle2, Search } from "lucide-react";
+import { CheckCircle2, MessageCircle, Search } from "lucide-react";
 
 type GuestResponse = "confirmado" | "nao-vai" | null;
 
@@ -22,16 +22,30 @@ type SearchResult = {
   guests: Omit<Guest, "response">[];
 };
 
+type ConfirmResult =
+  | {
+      success: true;
+      message: string;
+    }
+  | ApiMessage;
+
 type ApiMessage = {
   success: false;
   message: string;
+  code?: string;
+  advisor?: AdvisorContact;
+};
+
+type AdvisorContact = {
+  name: string;
+  whatsapp: string;
+  whatsappUrl: string;
+  email: string;
 };
 
 const defaultNotFound =
   "Não encontramos seu convite. Confira o nome ou fale com os noivos.";
-const lockedMessage =
-  "Sua confirmação já foi registrada. Para alterações, fale com os noivos.";
-const rsvpDeadline = process.env.NEXT_PUBLIC_RSVP_DEADLINE;
+const rsvpClosedCode = "RSVP_CLOSED";
 
 function normalizeText(value: string) {
   return value
@@ -44,20 +58,6 @@ function normalizeText(value: string) {
 function isFemale(guest: Guest) {
   const gender = normalizeText(guest.idGenero);
   return gender === "feminino" || gender === "femino" || gender === "f";
-}
-
-function isPastDeadline() {
-  if (!rsvpDeadline) {
-    return false;
-  }
-
-  const deadline = new Date(`${rsvpDeadline}T23:59:59`);
-
-  if (Number.isNaN(deadline.getTime())) {
-    return false;
-  }
-
-  return new Date() > deadline;
 }
 
 function getInitialResponse(guest: Omit<Guest, "response">): GuestResponse {
@@ -83,15 +83,14 @@ export default function RsvpLookup() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
-  const hasRegisteredResponse = guests.some((guest) => guest.response);
-  const rsvpLocked = isPastDeadline() && hasRegisteredResponse;
+  const [closedRsvp, setClosedRsvp] = useState<ApiMessage | null>(null);
 
   async function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSearching(true);
     setMessage("");
     setSuccessMessage("");
+    setClosedRsvp(null);
 
     try {
       const response = await fetch("/api/rsvp/search", {
@@ -122,10 +121,6 @@ export default function RsvpLookup() {
   }
 
   function updateGuest(id: string, nextGuest: Partial<Guest>) {
-    if (rsvpLocked) {
-      return;
-    }
-
     setGuests((current) =>
       current.map((guest) =>
         guest.id === id ? { ...guest, ...nextGuest } : guest
@@ -133,14 +128,10 @@ export default function RsvpLookup() {
     );
     setMessage("");
     setSuccessMessage("");
+    setClosedRsvp(null);
   }
 
   async function handleConfirm() {
-    if (rsvpLocked) {
-      setMessage(lockedMessage);
-      return;
-    }
-
     const hasPendingResponse = guests.some((guest) => !guest.response);
 
     if (hasPendingResponse) {
@@ -163,6 +154,7 @@ export default function RsvpLookup() {
     setSaving(true);
     setMessage("");
     setSuccessMessage("");
+    setClosedRsvp(null);
 
     try {
       const response = await fetch("/api/rsvp/confirm", {
@@ -177,12 +169,14 @@ export default function RsvpLookup() {
           })),
         }),
       });
-      const data = (await response.json()) as {
-        success: boolean;
-        message: string;
-      };
+      const data = (await response.json()) as ConfirmResult;
 
       if (!response.ok || !data.success) {
+        if ("code" in data && data.code === rsvpClosedCode) {
+          setClosedRsvp(data);
+          return;
+        }
+
         throw new Error(data.message);
       }
 
@@ -233,13 +227,50 @@ export default function RsvpLookup() {
 
       <p className="mt-4 px-2 text-left text-sm leading-6 text-[#61727a] md:px-5">
         Caso não encontre seu nome ou tenha alguma dúvida, fale com nossa
-        assessoria.
+        assessoria Isabel{" "}
+        <a
+          href="https://wa.me/5512991552826"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 font-semibold text-[#3f7f97] underline-offset-4 transition hover:text-[#173447] hover:underline"
+        >
+          <MessageCircle size={14} aria-hidden="true" />
+          +55 12 99155-2826
+        </a>
+        .
       </p>
 
       {message && (
         <p className="mt-4 rounded-2xl bg-[#f4efe6] px-5 py-4 text-center text-sm font-semibold text-[#8a4d36]">
           {message}
         </p>
+      )}
+
+      {closedRsvp && (
+        <div className="mt-4 rounded-2xl bg-[#f4efe6] px-5 py-4 text-center text-sm font-semibold text-[#8a4d36]">
+          <p className="whitespace-pre-line">{closedRsvp.message}</p>
+          {closedRsvp.advisor && (
+            <div className="mt-4 space-y-1 text-[#61727a]">
+              <p>{closedRsvp.advisor.name}</p>
+              <p>{closedRsvp.advisor.whatsapp}</p>
+              <a
+                href={`mailto:${closedRsvp.advisor.email}`}
+                className="inline-flex text-[#3f7f97] underline-offset-4 hover:underline"
+              >
+                {closedRsvp.advisor.email}
+              </a>
+            </div>
+          )}
+          <a
+            href={closedRsvp.advisor?.whatsappUrl ?? "https://wa.me/5512991552826"}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#173447] px-6 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#082337]"
+          >
+            <MessageCircle size={16} aria-hidden="true" />
+            Falar com a assessoria
+          </a>
+        </div>
       )}
 
       {familyId && (
@@ -251,17 +282,10 @@ export default function RsvpLookup() {
             </h2>
           </div>
 
-          {rsvpLocked && (
-            <p className="mt-4 rounded-2xl bg-white/75 px-5 py-4 text-center text-sm font-semibold text-[#61727a]">
-              {lockedMessage}
-            </p>
-          )}
-
           <div className="mt-6 flex max-w-xl flex-col gap-4">
             {guests.map((guest) => {
               const showSandalSize =
                 guest.response === "confirmado" && isFemale(guest);
-              const confirmDisabled = rsvpLocked;
 
               return (
                 <div
@@ -275,7 +299,6 @@ export default function RsvpLookup() {
                     <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap">
                       <button
                         type="button"
-                        disabled={confirmDisabled}
                         onClick={() =>
                           updateGuest(guest.id, { response: "confirmado" })
                         }
@@ -289,7 +312,6 @@ export default function RsvpLookup() {
                       </button>
                       <button
                         type="button"
-                        disabled={rsvpLocked}
                         onClick={() =>
                           updateGuest(guest.id, { response: "nao-vai" })
                         }
@@ -309,7 +331,6 @@ export default function RsvpLookup() {
                       Número do chinelo
                       <input
                         value={guest.tamanhoChinelo}
-                        disabled={rsvpLocked}
                         onChange={(event) =>
                           updateGuest(guest.id, {
                             tamanhoChinelo: event.target.value,
@@ -327,7 +348,7 @@ export default function RsvpLookup() {
           <button
             type="button"
             onClick={handleConfirm}
-            disabled={saving || rsvpLocked}
+            disabled={saving}
             className="mt-6 inline-flex h-14 w-full items-center justify-center rounded-full bg-[#173447] px-8 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-xl shadow-[#173447]/18 transition hover:-translate-y-0.5 hover:bg-[#082337] disabled:cursor-not-allowed disabled:bg-[#61727a]/45 disabled:shadow-none"
           >
             {saving ? "Registrando..." : "Registrar resposta"}

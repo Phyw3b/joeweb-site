@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { isRsvpClosed, rsvpClosedMessage } from "./rsvpDeadline";
 
 const SHEET_RANGE_COLUMNS = "A:AD";
 
@@ -214,27 +215,6 @@ function setIfColumnExists(values: string[], index: number, value: string) {
   }
 }
 
-function hasRegisteredResponse(row: SheetGuest) {
-  const status = normalizeSearchText(row.statusIndividual);
-  return status === "confirmado" || status === "nao ira";
-}
-
-function isPastRsvpDeadline() {
-  const deadline = process.env.NEXT_PUBLIC_RSVP_DEADLINE;
-
-  if (!deadline) {
-    return false;
-  }
-
-  const deadlineDate = new Date(`${deadline}T23:59:59`);
-
-  if (Number.isNaN(deadlineDate.getTime())) {
-    return false;
-  }
-
-  return new Date() > deadlineDate;
-}
-
 function withAuditColumns(headers: string[], columns: ColumnMap) {
   const nextHeaders = [...headers];
   const nextColumns = { ...columns };
@@ -320,10 +300,8 @@ export async function updateGuestRows(
     throw new Error("Family not found.");
   }
 
-  if (isPastRsvpDeadline() && familyRows.some(hasRegisteredResponse)) {
-    throw new Error(
-      "Sua confirmação já foi registrada. Para alterações, fale com os noivos."
-    );
+  if (isRsvpClosed()) {
+    throw new Error(rsvpClosedMessage);
   }
 
   const guestsById = new Map(guests.map((guest) => [guest.id, guest]));
