@@ -459,7 +459,7 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
                         setPaymentError("");
                       }}
                       inputMode="decimal"
-                      placeholder="R$ 100"
+                      placeholder="Digite o valor"
                     />
 
                     {paymentError && (
