@@ -1,9 +1,18 @@
 "use client";
 
-import { Calendar, ChevronDown, Heart, MapPin, Menu, X } from "lucide-react";
+import {
+  Calendar,
+  ChevronDown,
+  Heart,
+  MapPin,
+  Menu,
+  Pause,
+  Play,
+  X,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import WeddingAccessGate from "../components/WeddingAccessGate";
 import infoStyles from "./HomeInfoFrame.module.css";
 import eventPreviewStyles from "./EventPreview.module.css";
@@ -32,6 +41,8 @@ export default function Home() {
   const [scrollY, setScrollY] = useState(0);
   const [activeStory, setActiveStory] = useState(0);
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const musicRef = useRef<HTMLAudioElement>(null);
 
   const navItems = useMemo(
     () => ["Início", "Nossa História", "O Evento", "RSVP", "Presentes"],
@@ -123,6 +134,60 @@ export default function Home() {
     return () => window.clearInterval(timer);
   }, [storyCards.length]);
 
+  useEffect(() => {
+    const music = musicRef.current;
+
+    if (!music) {
+      return;
+    }
+
+    music.volume = 0.45;
+  }, []);
+
+  useEffect(() => {
+    function handleAccessGranted() {
+      void playMusic();
+    }
+
+    window.addEventListener("wedding-access-granted", handleAccessGranted);
+
+    return () =>
+      window.removeEventListener("wedding-access-granted", handleAccessGranted);
+  }, []);
+
+  async function playMusic() {
+    const music = musicRef.current;
+
+    if (!music) {
+      return;
+    }
+
+    music.volume = 0.45;
+
+    try {
+      await music.play();
+      setIsMusicPlaying(true);
+    } catch {
+      setIsMusicPlaying(false);
+    }
+  }
+
+  async function toggleMusic() {
+    const music = musicRef.current;
+
+    if (!music) {
+      return;
+    }
+
+    if (music.paused) {
+      await playMusic();
+      return;
+    }
+
+    music.pause();
+    setIsMusicPlaying(false);
+  }
+
   const getAnchor = (item: string) =>
     item === "Presentes"
       ? "/presentes"
@@ -141,6 +206,13 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f4efe6] text-[#173447] selection:bg-[#9fc7d7]/40">
+      <audio
+        ref={musicRef}
+        src="/media/beauty-and-the-beast.mp3"
+        preload="auto"
+        loop
+        aria-hidden="true"
+      />
       <header
         className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${
           scrollY > 30
@@ -179,6 +251,15 @@ export default function Home() {
                 {item}
               </a>
             ))}
+            <button
+              type="button"
+              onClick={toggleMusic}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/18"
+              aria-label={isMusicPlaying ? "Pausar musica" : "Tocar musica"}
+              title={isMusicPlaying ? "Pausar musica" : "Tocar musica"}
+            >
+              {isMusicPlaying ? <Pause size={18} /> : <Play size={18} />}
+            </button>
           </nav>
 
           <button
@@ -209,6 +290,18 @@ export default function Home() {
                   {item}
                 </a>
               ))}
+              <button
+                type="button"
+                onClick={() => {
+                  void toggleMusic();
+                  setOpen(false);
+                }}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition hover:bg-white/18"
+                aria-label={isMusicPlaying ? "Pausar musica" : "Tocar musica"}
+                title={isMusicPlaying ? "Pausar musica" : "Tocar musica"}
+              >
+                {isMusicPlaying ? <Pause size={18} /> : <Play size={18} />}
+              </button>
             </div>
           </motion.div>
         )}

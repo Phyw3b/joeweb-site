@@ -97,6 +97,7 @@ export default function WeddingAccessGate({
 
       setHasAccess(true);
       setPassword("");
+      window.dispatchEvent(new Event("wedding-access-granted"));
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
