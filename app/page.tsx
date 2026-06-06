@@ -43,6 +43,7 @@ export default function Home() {
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const musicRef = useRef<HTMLAudioElement>(null);
+  const manualPauseRef = useRef(false);
 
   const navItems = useMemo(
     () => ["Início", "Nossa História", "O Evento", "RSVP", "Presentes"],
@@ -146,7 +147,7 @@ export default function Home() {
 
   useEffect(() => {
     function handleAccessGranted() {
-      void playMusic();
+      void playMusic({ respectManualPause: true });
     }
 
     window.addEventListener("wedding-access-granted", handleAccessGranted);
@@ -155,10 +156,28 @@ export default function Home() {
       window.removeEventListener("wedding-access-granted", handleAccessGranted);
   }, []);
 
-  async function playMusic() {
+  useEffect(() => {
+    function startMusicFromPageInteraction() {
+      void playMusic({ respectManualPause: true });
+    }
+
+    window.addEventListener("pointerdown", startMusicFromPageInteraction);
+    window.addEventListener("scroll", startMusicFromPageInteraction, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("pointerdown", startMusicFromPageInteraction);
+      window.removeEventListener("scroll", startMusicFromPageInteraction);
+    };
+  }, []);
+
+  async function playMusic({
+    respectManualPause = false,
+  }: { respectManualPause?: boolean } = {}) {
     const music = musicRef.current;
 
-    if (!music) {
+    if (!music || (respectManualPause && manualPauseRef.current)) {
       return;
     }
 
@@ -180,10 +199,12 @@ export default function Home() {
     }
 
     if (music.paused) {
+      manualPauseRef.current = false;
       await playMusic();
       return;
     }
 
+    manualPauseRef.current = true;
     music.pause();
     setIsMusicPlaying(false);
   }
