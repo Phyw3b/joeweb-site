@@ -128,6 +128,8 @@ export default function Home() {
       ? "/presentes"
       : item === "O Evento"
         ? "/evento"
+        : item === "RSVP"
+          ? "/rsvp"
       :
     `#${item
       .toLowerCase()

@@ -26,13 +26,13 @@ const mapRouteUrl =
 const inspirations = [
   {
     title: "Inspiração Masculina",
-    text: "Referências de looks Beach Chic para eles.",
+    text: "Referências de looks Praia Elegante para eles.",
     href: "https://www.google.com/search?tbm=isch&q=beach+chic+masculino+casamento+praia",
     Icon: Shirt,
   },
   {
     title: "Inspiração Feminina",
-    text: "Referências de looks Beach Chic para elas.",
+    text: "Referências de looks Praia Elegante para elas.",
     href: "https://www.google.com/search?tbm=isch&q=beach+chic+feminino+casamento+praia",
     Icon: Sparkles,
   },
@@ -162,7 +162,7 @@ export default function EventoPage() {
                 Traje
               </p>
               <h2 className="font-serif text-5xl font-light leading-tight md:text-7xl">
-                Beach Chic
+                Praia Elegante
               </h2>
               <div className="mt-5 h-px w-24 bg-[#d7b77a]" />
               <p className="mt-8 max-w-sm text-base leading-8 text-[#3f5360]">
