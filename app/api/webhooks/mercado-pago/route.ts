@@ -1,6 +1,9 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
-import { approveGiftPayment } from "../../../../lib/giftsDb";
+import {
+  approveGiftPayment,
+  syncGiftPaymentStatus,
+} from "../../../../lib/giftsDb";
 
 export const runtime = "nodejs";
 
@@ -107,6 +110,14 @@ export async function POST(request: Request) {
     }
 
     if (payment.status !== "approved") {
+      if (payment.external_reference && payment.status) {
+        await syncGiftPaymentStatus(
+          payment.external_reference,
+          payment.status,
+          String(payment.id ?? paymentId)
+        );
+      }
+
       return NextResponse.json({ received: true }, { status: 200 });
     }
 

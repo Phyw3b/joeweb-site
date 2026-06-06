@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { canRevealMemory } from "../../../../lib/giftsDb";
 import { getMemory } from "../../../../lib/memories";
+import {
+  canRevealSimulatedMemory,
+  isPaymentSimulatorEnabled,
+} from "../../../../lib/paymentSimulator";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -30,6 +34,8 @@ export async function GET(request: Request, context: RouteContext) {
     const token = requestUrl.searchParams.get("token");
     const canReveal =
       canUseLocalPreview(requestUrl, token) ||
+      (isPaymentSimulatorEnabled() &&
+        canRevealSimulatedMemory(memoryId, token)) ||
       (await canRevealMemory(memoryId, token));
 
     if (!canReveal) {

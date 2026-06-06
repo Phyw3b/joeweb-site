@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import { getUnlockedMemories } from "../../../lib/giftsDb";
+import {
+  getSimulatedUnlockedMemories,
+  isPaymentSimulatorEnabled,
+} from "../../../lib/paymentSimulator";
 
 export async function GET() {
   try {
-    const memories = await getUnlockedMemories();
+    const memories = isPaymentSimulatorEnabled()
+      ? getSimulatedUnlockedMemories()
+      : await getUnlockedMemories();
 
     return NextResponse.json({
       success: true,

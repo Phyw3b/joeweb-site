@@ -3,6 +3,8 @@ create extension if not exists pgcrypto;
 create table if not exists gift_payments (
   id uuid primary key default gen_random_uuid(),
   memory_id integer not null,
+  guest_id text,
+  guest_group_id text,
   guest_name text not null,
   guest_email text not null,
   amount numeric(10, 2) not null,
@@ -27,6 +29,9 @@ create table if not exists unlocked_memories (
 
 create index if not exists gift_payments_external_reference_idx
   on gift_payments (external_reference);
+
+create index if not exists gift_payments_guest_group_status_idx
+  on gift_payments (guest_group_id, status);
 
 create index if not exists unlocked_memories_memory_id_idx
   on unlocked_memories (memory_id);

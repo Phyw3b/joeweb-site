@@ -1,11 +1,24 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
-import { createGiftPayment } from "../../../lib/giftsDb";
+import {
+  createGiftPayment,
+  GiftGroupLimitError,
+  markGiftPaymentRejected,
+  setGiftPaymentPreference,
+} from "../../../lib/giftsDb";
+import { findGiftGuestGroup } from "../../../lib/googleSheets";
 import { getMemory } from "../../../lib/memories";
+import {
+  createSimulatedGiftPayment,
+  isPaymentSimulatorEnabled,
+  SimulatedGiftGroupLimitError,
+} from "../../../lib/paymentSimulator";
 
 export const runtime = "nodejs";
 
 const minimumGiftAmount = 100;
+const guestNotFoundMessage =
+  "Não encontramos esse nome na lista de convidados. Confira o nome usado no RSVP ou fale com os noivos.";
 const minimumMessage = "O valor mínimo para desbloquear uma memória é R$100 ❤️";
 
 type CreatePaymentBody = {
@@ -91,6 +104,39 @@ export async function POST(request: Request) {
       return errorResponse(minimumMessage, "amount_below_minimum", 400);
     }
 
+    const externalReference = `memory_${memoryId}_${crypto.randomUUID()}`;
+
+    if (isPaymentSimulatorEnabled()) {
+      try {
+        const guestGroup = await findGiftGuestGroup(guestName).catch(() => null);
+        const simulatedPayment = createSimulatedGiftPayment({
+          memoryId,
+          guestId: guestGroup?.guestId,
+          guestGroupId: guestGroup?.guestGroupId,
+          guestName: guestGroup?.guestName ?? guestName,
+          guestEmail,
+          amount,
+          externalReference,
+        });
+
+        if (!simulatedPayment.ok) {
+          return errorResponse(guestNotFoundMessage, "", 404);
+        }
+
+        return NextResponse.json({
+          success: true,
+          init_point: `/api/dev/mercado-pago-simulator?externalReference=${externalReference}`,
+          preference_id: simulatedPayment.preferenceId,
+        });
+      } catch (error) {
+        if (error instanceof SimulatedGiftGroupLimitError) {
+          return errorResponse(error.message, "", 409);
+        }
+
+        throw error;
+      }
+    }
+
     if (!siteUrl || !mercadoPagoToken || !hasDatabaseUrl) {
       console.error("create-payment: missing required payment configuration", {
         missing: [
@@ -109,7 +155,30 @@ export async function POST(request: Request) {
       );
     }
 
-    const externalReference = `memory_${memoryId}_${crypto.randomUUID()}`;
+    const guestGroup = await findGiftGuestGroup(guestName);
+
+    if (!guestGroup) {
+      return errorResponse(guestNotFoundMessage, "", 404);
+    }
+
+    try {
+      await createGiftPayment({
+        memoryId,
+        guestId: guestGroup.guestId,
+        guestGroupId: guestGroup.guestGroupId,
+        guestName: guestGroup.guestName,
+        guestEmail,
+        amount,
+        externalReference,
+      });
+    } catch (error) {
+      if (error instanceof GiftGroupLimitError) {
+        return errorResponse(error.message, "", 409);
+      }
+
+      throw error;
+    }
+
     const notificationUrl = `${siteUrl}/api/webhooks/mercado-pago`;
     const preferencePayload = {
       items: [
@@ -122,7 +191,7 @@ export async function POST(request: Request) {
         },
       ],
       payer: {
-        name: guestName,
+        name: guestGroup.guestName,
         email: guestEmail,
       },
       external_reference: externalReference,
@@ -169,21 +238,16 @@ export async function POST(request: Request) {
         hasPreferenceId: Boolean(preference.id),
       });
 
+      await markGiftPaymentRejected(externalReference);
       return publicPaymentError("payment_provider_unavailable");
     }
 
-    await createGiftPayment({
-      memoryId,
-      guestName,
-      guestEmail,
-      amount,
-      externalReference,
-      preferenceId: preference.id,
-    });
+    await setGiftPaymentPreference(externalReference, preference.id);
 
     const initPoint = preference.init_point ?? preference.sandbox_init_point;
 
     if (!initPoint) {
+      await markGiftPaymentRejected(externalReference);
       return publicPaymentError("payment_provider_unavailable");
     }
 

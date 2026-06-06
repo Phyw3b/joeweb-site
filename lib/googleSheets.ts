@@ -52,6 +52,12 @@ export type UpdateGuestInput = {
   tamanhoChinelo?: string;
 };
 
+export type GiftGuestGroup = {
+  guestId: string;
+  guestName: string;
+  guestGroupId: string;
+};
+
 function getSheetConfig() {
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
   const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
@@ -261,6 +267,44 @@ export async function getRows() {
     .slice(1)
     .map((row, index) => normalizeRow(row, index + 2, columns, headers))
     .filter((row) => row.id && row.familiaId);
+}
+
+function splitSearchNames(value: string) {
+  return value
+    .split(/[;,|]/)
+    .map(normalizeSearchText)
+    .filter(Boolean);
+}
+
+export async function findGiftGuestGroup(
+  guestName: string
+): Promise<GiftGuestGroup | null> {
+  const search = normalizeSearchText(guestName);
+
+  if (!search) {
+    return null;
+  }
+
+  const rows = await getRows();
+  const found = rows.find((row) => {
+    const directNames = [
+      row.nomeIndividual,
+      row.nomeConvite,
+      ...splitSearchNames(row.nomesBusca),
+    ].map(normalizeSearchText);
+
+    return directNames.includes(search);
+  });
+
+  if (!found) {
+    return null;
+  }
+
+  return {
+    guestId: found.id,
+    guestName: found.nomeIndividual || found.nomeConvite || guestName,
+    guestGroupId: found.familiaId,
+  };
 }
 
 export async function updateGuestRows(

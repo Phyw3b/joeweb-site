@@ -1,15 +1,25 @@
 import crypto from "crypto";
 import { Pool, PoolClient, QueryResultRow } from "pg";
 
-export type GiftPaymentStatus = "pending" | "approved" | "rejected";
+export type GiftPaymentStatus =
+  | "pending"
+  | "in_process"
+  | "approved"
+  | "paid"
+  | "confirmed"
+  | "rejected"
+  | "cancelled"
+  | "canceled"
+  | "expired";
 
 type GiftPaymentInput = {
   memoryId: number;
+  guestId: string;
+  guestGroupId: string;
   guestName: string;
   guestEmail: string;
   amount: number;
   externalReference: string;
-  preferenceId?: string;
 };
 
 type ApprovedPaymentInput = {
@@ -19,6 +29,24 @@ type ApprovedPaymentInput = {
 };
 
 let pool: Pool | null = null;
+
+const giftGroupLimit = 2;
+const validLimitStatuses = [
+  "paid",
+  "approved",
+  "confirmed",
+  "pending",
+  "in_process",
+];
+
+export class GiftGroupLimitError extends Error {
+  constructor() {
+    super(
+      "Esse grupo familiar já desbloqueou o limite de memórias disponíveis. Nossa ideia é que todos possam participar dessa história com carinho. ❤️"
+    );
+    this.name = "GiftGroupLimitError";
+  }
+}
 
 function getPool() {
   const connectionString = process.env.DATABASE_URL;
@@ -48,25 +76,121 @@ export async function query<T extends QueryResultRow>(
   return getPool().query<T>(text, params);
 }
 
+export async function ensureGiftPaymentSchema() {
+  await query(`
+    alter table gift_payments
+      add column if not exists guest_id text,
+      add column if not exists guest_group_id text
+  `);
+
+  await query(`
+    create index if not exists gift_payments_guest_group_status_idx
+      on gift_payments (guest_group_id, status)
+  `);
+}
+
 export async function createGiftPayment(input: GiftPaymentInput) {
-  await query(
-    `insert into gift_payments (
+  await ensureGiftPaymentSchema();
+
+  const client = await getPool().connect();
+
+  try {
+    await client.query("begin");
+    await client.query("select pg_advisory_xact_lock(hashtext($1))", [
+      input.guestGroupId,
+    ]);
+    await client.query(
+      `update gift_payments
+       set status = 'expired',
+         updated_at = now()
+       where guest_group_id = $1
+         and status in ('pending', 'in_process')
+         and created_at < now() - interval '24 hours'`,
+      [input.guestGroupId]
+    );
+
+    const limitResult = await client.query<{ total: number }>(
+      `select count(*)::int as total
+       from gift_payments
+       where guest_group_id = $1
+         and status = any($2::text[])`,
+      [input.guestGroupId, validLimitStatuses]
+    );
+    const total = limitResult.rows[0]?.total ?? 0;
+
+    if (total >= giftGroupLimit) {
+      throw new GiftGroupLimitError();
+    }
+
+    await client.query(
+      `insert into gift_payments (
       memory_id,
+      guest_id,
+      guest_group_id,
       guest_name,
       guest_email,
       amount,
       status,
-      external_reference,
-      mercado_pago_preference_id
-    ) values ($1, $2, $3, $4, 'pending', $5, $6)`,
-    [
-      input.memoryId,
-      input.guestName,
-      input.guestEmail,
-      input.amount,
-      input.externalReference,
-      input.preferenceId ?? null,
-    ]
+      external_reference
+    ) values ($1, $2, $3, $4, $5, $6, 'pending', $7)`,
+      [
+        input.memoryId,
+        input.guestId,
+        input.guestGroupId,
+        input.guestName,
+        input.guestEmail,
+        input.amount,
+        input.externalReference,
+      ]
+    );
+    await client.query("commit");
+  } catch (error) {
+    await client.query("rollback");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function setGiftPaymentPreference(
+  externalReference: string,
+  preferenceId: string
+) {
+  await query(
+    `update gift_payments
+     set mercado_pago_preference_id = $2,
+       updated_at = now()
+     where external_reference = $1`,
+    [externalReference, preferenceId]
+  );
+}
+
+export async function markGiftPaymentRejected(externalReference: string) {
+  await query(
+    `update gift_payments
+     set status = 'rejected',
+       updated_at = now()
+     where external_reference = $1
+       and status in ('pending', 'in_process')`,
+    [externalReference]
+  );
+}
+
+export async function syncGiftPaymentStatus(
+  externalReference: string,
+  status: string,
+  mercadoPagoPaymentId?: string
+) {
+  const normalizedStatus = status === "cancelled" ? "canceled" : status;
+
+  await query(
+    `update gift_payments
+     set status = $2,
+       mercado_pago_payment_id = coalesce($3, mercado_pago_payment_id),
+       updated_at = now()
+     where external_reference = $1
+       and status <> 'approved'`,
+    [externalReference, normalizedStatus, mercadoPagoPaymentId ?? null]
   );
 }
 
