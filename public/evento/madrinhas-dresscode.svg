@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 640" role="img" aria-labelledby="title desc">
+  <title id="title">Paleta e vestidos das madrinhas</title>
+  <desc id="desc">Cinco circulos em tons de azul serenity acima de duas ilustracoes de vestidos longos.</desc>
+  <defs>
+    <filter id="paper" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="21" result="noise" />
+      <feColorMatrix in="noise" type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.08" />
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" mode="multiply" />
+    </filter>
+    <linearGradient id="dressA" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#c6d5e6" />
+      <stop offset=".5" stop-color="#9fb6d1" />
+      <stop offset="1" stop-color="#d9e2ef" />
+    </linearGradient>
+    <linearGradient id="dressB" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#91a7dc" />
+      <stop offset=".55" stop-color="#6279c7" />
+      <stop offset="1" stop-color="#b7c6ee" />
+    </linearGradient>
+  </defs>
+  <rect width="520" height="640" fill="#f8f5ee" filter="url(#paper)" />
+  <g transform="translate(44 36)">
+    <circle cx="56" cy="56" r="54" fill="#c8d4e8" stroke="#fffaf2" stroke-width="7" />
+    <circle cx="110" cy="56" r="54" fill="#aebcdd" stroke="#fffaf2" stroke-width="7" />
+    <circle cx="164" cy="56" r="54" fill="#95abd5" stroke="#fffaf2" stroke-width="7" />
+    <circle cx="218" cy="56" r="54" fill="#708ac7" stroke="#fffaf2" stroke-width="7" />
+    <circle cx="272" cy="56" r="54" fill="#596ab4" stroke="#fffaf2" stroke-width="7" />
+  </g>
+  <g transform="translate(84 190)">
+    <circle cx="92" cy="42" r="25" fill="#efc1a8" />
+    <path d="M62 40c-29 33-26 87-12 132 21-14 28-50 22-76 20 19 48 20 70 0-4 28 4 61 25 76 14-55-1-108-31-132-23-19-54-19-74 0Z" fill="#333237" />
+    <path d="M67 93h58l22 76H46Z" fill="url(#dressA)" />
+    <path d="M46 169C28 243 11 335 4 444c41 24 86 17 119-38 28 61 83 60 126 38-12-113-30-202-58-275Z" fill="url(#dressA)" />
+    <path d="M81 96h29l12 227H69Z" fill="#efc1a8" opacity=".95" />
+    <path d="M64 114c-25 24-43 59-49 101M132 112c34 32 50 68 58 110" fill="none" stroke="#efc1a8" stroke-linecap="round" stroke-width="15" />
+    <path d="M47 169c43 24 104 24 144 0" fill="none" stroke="#fffaf2" stroke-width="5" opacity=".45" />
+    <path d="M90 72c-7 21-19 35-37 42M104 72c10 18 25 29 44 35" fill="none" stroke="#333237" stroke-width="8" stroke-linecap="round" />
+  </g>
+  <g transform="translate(266 196)">
+    <circle cx="90" cy="38" r="23" fill="#efc1a8" />
+    <path d="M48 39c-16 34-14 83 0 127 16-20 23-51 21-83 23 20 55 21 79 0-1 31 12 61 29 83 13-52 7-100-22-131-31-25-84-22-107 4Z" fill="#5a3b2c" />
+    <path d="M62 88h70l24 80H40Z" fill="url(#dressB)" />
+    <path d="M40 168C19 254 8 345 2 438c45 22 96 19 126-31 30 51 84 54 129 31-10-97-27-190-66-270Z" fill="url(#dressB)" />
+    <path d="M81 90h31l8 224H71Z" fill="#efc1a8" opacity=".9" />
+    <path d="M55 109c-24 28-40 63-47 105M143 108c30 29 45 63 53 102" fill="none" stroke="#efc1a8" stroke-linecap="round" stroke-width="15" />
+    <path d="M40 168c44 23 113 23 151 0" fill="none" stroke="#fffaf2" stroke-width="5" opacity=".45" />
+    <path d="M80 66c-8 18-20 29-39 34M105 65c11 15 26 24 44 28" fill="none" stroke="#5a3b2c" stroke-width="8" stroke-linecap="round" />
+  </g>
+</svg>

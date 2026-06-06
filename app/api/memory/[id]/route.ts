@@ -6,6 +6,13 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
+function canUseLocalPreview(requestUrl: URL, token?: string | null) {
+  const hostname = requestUrl.hostname;
+  const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1";
+
+  return isLocalHost && token === "preview";
+}
+
 export async function GET(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
@@ -19,8 +26,11 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const token = new URL(request.url).searchParams.get("token");
-    const canReveal = await canRevealMemory(memoryId, token);
+    const requestUrl = new URL(request.url);
+    const token = requestUrl.searchParams.get("token");
+    const canReveal =
+      canUseLocalPreview(requestUrl, token) ||
+      (await canRevealMemory(memoryId, token));
 
     if (!canReveal) {
       return NextResponse.json(
@@ -34,6 +44,7 @@ export async function GET(request: Request, context: RouteContext) {
       memory: {
         id: memory.id,
         imageSrc: memory.finalSrc,
+        subtitle: memory.subtitle,
         story: memory.story,
       },
     });

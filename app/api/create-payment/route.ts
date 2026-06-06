@@ -128,9 +128,9 @@ export async function POST(request: Request) {
       external_reference: externalReference,
       notification_url: notificationUrl,
       back_urls: {
-        success: `${siteUrl}/presentes`,
-        pending: `${siteUrl}/presentes`,
-        failure: `${siteUrl}/presentes`,
+        success: `${siteUrl}/presentes?status=approved`,
+        pending: `${siteUrl}/presentes?status=pending`,
+        failure: `${siteUrl}/presentes?status=failure`,
       },
       auto_return: "approved",
     };

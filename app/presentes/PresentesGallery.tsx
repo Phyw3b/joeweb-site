@@ -20,6 +20,7 @@ type UnlockedMemory = {
 type MemoryDetails = {
   id: number;
   imageSrc: string;
+  subtitle?: string;
   story: string;
 };
 
@@ -32,8 +33,20 @@ type ApiMessage = {
 
 const minimumGiftAmount = 100;
 
+function canUseLocalPreview() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const { hostname, search } = window.location;
+  const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1";
+
+  return isLocalHost && new URLSearchParams(search).get("preview") === "memorias";
+}
+
 export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] }) {
   const [showIntro, setShowIntro] = useState(true);
+  const [showThanks, setShowThanks] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [buyerName, setBuyerName] = useState("");
   const [buyerEmail, setBuyerEmail] = useState("");
@@ -50,7 +63,42 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
   const [loadingMemory, setLoadingMemory] = useState(false);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("status") !== "approved") {
+      return;
+    }
+
+    setShowIntro(false);
+    setShowThanks(true);
+    params.delete("status");
+
+    const nextSearch = params.toString();
+    const nextUrl = `${window.location.pathname}${
+      nextSearch ? `?${nextSearch}` : ""
+    }`;
+
+    window.history.replaceState({}, "", nextUrl);
+  }, []);
+
+  useEffect(() => {
     async function loadUnlockedMemories() {
+      if (canUseLocalPreview()) {
+        setUnlockedMemories(
+          Object.fromEntries(
+            photos.map((photo) => [
+              photo.id,
+              {
+                memoryId: photo.id,
+                guestName: "Prévia local",
+                unlockToken: "preview",
+              },
+            ])
+          )
+        );
+        return;
+      }
+
       try {
         const response = await fetch("/api/unlocked-memories", {
           cache: "no-store",
@@ -72,7 +120,7 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
     }
 
     void loadUnlockedMemories();
-  }, []);
+  }, [photos]);
 
   const selectedPhoto = useMemo(() => {
     if (selected === null) {
@@ -270,9 +318,47 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
         </div>
       )}
 
+      {showThanks && (
+        <div className={styles.modalOverlay}>
+          <div className={`${styles.modalCard} ${styles.thanksCard}`}>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={() => setShowThanks(false)}
+              aria-label="Fechar"
+            >
+              <X size={16} />
+            </button>
+
+            <span className={styles.thanksIcon} aria-hidden="true">
+              ♥
+            </span>
+            <p className={styles.modalEyebrow}>Presente recebido</p>
+            <h2 className={styles.thanksTitle}>
+              Obrigado por ajudar a colorir mais uma lembrança da nossa história.
+            </h2>
+            <p className={styles.modalText}>
+              Sua memória será revelada em instantes. Se ela ainda não aparecer
+              colorida, atualize a página daqui a pouquinho.
+            </p>
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => setShowThanks(false)}
+            >
+              Ver memórias
+            </button>
+          </div>
+        </div>
+      )}
+
       {selectedPhoto && (
         <div className={styles.modalOverlay}>
-          <div className={`${styles.modalCard} ${styles.giftCard}`}>
+          <div
+            className={`${styles.modalCard} ${styles.giftCard} ${
+              selectedUnlock ? styles.revealedCard : ""
+            }`}
+          >
             <button
               type="button"
               className={styles.closeButton}
@@ -295,13 +381,21 @@ export default function PresentesGallery({ photos }: { photos: PreviewPhoto[] })
                   />
                 </div>
                 <h2 className={styles.modalTitle}>Memória revelada</h2>
+                {memoryDetails?.subtitle && (
+                  <p className={styles.memorySubtitle}>
+                    {memoryDetails.subtitle}
+                  </p>
+                )}
                 <p className={styles.modalText}>
                   {loadingMemory
                     ? "Carregando lembrança..."
                     : memoryDetails?.story ?? "Esta memória foi revelada."}
                 </p>
                 <p className={styles.buyerText}>
-                  Revelada por {selectedUnlock.guestName}
+                  <span className={styles.buyerIcon} aria-hidden="true">
+                    ✦
+                  </span>
+                  <span>Revelada por {selectedUnlock.guestName}</span>
                 </p>
               </>
             ) : (
