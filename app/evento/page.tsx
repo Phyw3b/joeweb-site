@@ -143,12 +143,12 @@ export default function EventoPage() {
               >
                 Confirmar presença
               </Link>
-              <a
-                href="#como-chegar"
+              <Link
+                href="/presentes"
                 className="inline-flex h-16 w-full max-w-xs items-center justify-center rounded-full border border-white/35 bg-[#173447]/80 px-8 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-2xl shadow-black/25 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-[#082337] sm:max-w-sm"
               >
-                Ver como chegar
-              </a>
+                Presentes
+              </Link>
             </div>
           </div>
         </section>
