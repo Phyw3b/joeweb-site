@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { CheckCircle2, MessageCircle, Search } from "lucide-react";
 
 type GuestResponse = "confirmado" | "nao-vai" | null;
@@ -84,21 +84,36 @@ export default function RsvpLookup() {
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [closedRsvp, setClosedRsvp] = useState<ApiMessage | null>(null);
+  const searchRequestRef = useRef(0);
 
   async function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const searchRequestId = searchRequestRef.current + 1;
+    searchRequestRef.current = searchRequestId;
+    const searchQuery = query.trim();
+
     setSearching(true);
+    setFamilyId("");
+    setGuests([]);
     setMessage("");
     setSuccessMessage("");
     setClosedRsvp(null);
 
     try {
+      if (!searchQuery) {
+        throw new Error("Digite um nome para buscar o convite.");
+      }
+
       const response = await fetch("/api/rsvp/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query: searchQuery }),
       });
       const data = (await response.json()) as SearchResult | ApiMessage;
+
+      if (searchRequestRef.current !== searchRequestId) {
+        return;
+      }
 
       if (!response.ok || data.success !== true) {
         throw new Error("message" in data ? data.message : defaultNotFound);
@@ -112,11 +127,17 @@ export default function RsvpLookup() {
         }))
       );
     } catch (error) {
+      if (searchRequestRef.current !== searchRequestId) {
+        return;
+      }
+
       setFamilyId("");
       setGuests([]);
       setMessage(error instanceof Error ? error.message : defaultNotFound);
     } finally {
-      setSearching(false);
+      if (searchRequestRef.current === searchRequestId) {
+        setSearching(false);
+      }
     }
   }
 
