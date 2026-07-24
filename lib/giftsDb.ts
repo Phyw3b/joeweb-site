@@ -35,8 +35,6 @@ const validLimitStatuses = [
   "paid",
   "approved",
   "confirmed",
-  "pending",
-  "in_process",
 ];
 
 export class GiftGroupLimitError extends Error {

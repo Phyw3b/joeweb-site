@@ -47,8 +47,6 @@ const validLimitStatuses = [
   "paid",
   "approved",
   "confirmed",
-  "pending",
-  "in_process",
 ];
 const giftGroupLimit = 2;
 const storePath = path.join(process.cwd(), ".local-payment-simulator.json");
