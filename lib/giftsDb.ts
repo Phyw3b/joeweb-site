@@ -28,6 +28,21 @@ type ApprovedPaymentInput = {
   amount: number;
 };
 
+export type GiftAdminRow = {
+  unlock_id: string;
+  memory_id: number;
+  public_guest_name: string;
+  unlocked_at: Date;
+  payment_guest_name: string;
+  guest_email: string;
+  guest_id: string | null;
+  guest_group_id: string | null;
+  amount: string;
+  status: GiftPaymentStatus;
+  approved_at: Date | null;
+  payment_created_at: Date;
+};
+
 let pool: Pool | null = null;
 
 const giftGroupLimit = 2;
@@ -285,6 +300,44 @@ export async function getUnlockedMemories() {
   );
 
   return result.rows;
+}
+
+export async function getGiftAdminRows() {
+  const result = await query<GiftAdminRow>(
+    `select
+      um.id as unlock_id,
+      um.memory_id,
+      um.guest_name as public_guest_name,
+      um.created_at as unlocked_at,
+      gp.guest_name as payment_guest_name,
+      gp.guest_email,
+      gp.guest_id,
+      gp.guest_group_id,
+      gp.amount::text,
+      gp.status,
+      gp.approved_at,
+      gp.created_at as payment_created_at
+     from unlocked_memories um
+     join gift_payments gp on gp.id = um.gift_payment_id
+     order by um.memory_id asc, um.created_at asc`
+  );
+
+  return result.rows;
+}
+
+export async function updateUnlockedMemoryGuestName(
+  unlockId: string,
+  guestName: string
+) {
+  const result = await query<{ id: string }>(
+    `update unlocked_memories
+     set guest_name = $2
+     where id = $1
+     returning id`,
+    [unlockId, guestName]
+  );
+
+  return (result.rowCount ?? 0) > 0;
 }
 
 export async function canRevealMemory(memoryId: number, token?: string | null) {
