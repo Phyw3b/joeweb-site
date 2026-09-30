@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { Pool, PoolClient, QueryResultRow } from "pg";
 
 export type GiftPaymentStatus =
+  | "manual_grant"
   | "pending"
   | "in_process"
   | "approved"
@@ -61,6 +62,13 @@ export class GiftGroupLimitError extends Error {
   }
 }
 
+export class MemoryAlreadyUnlockedError extends Error {
+  constructor() {
+    super("Esta memória já foi revelada. Escolha outra memória para presentear.");
+    this.name = "MemoryAlreadyUnlockedError";
+  }
+}
+
 function getPool() {
   const connectionString = process.env.DATABASE_URL;
 
@@ -109,6 +117,16 @@ export async function createGiftPayment(input: GiftPaymentInput) {
 
   try {
     await client.query("begin");
+    await client.query("select pg_advisory_xact_lock(hashtext($1))", [
+      `memory:${input.memoryId}`,
+    ]);
+    const unlocked = await client.query(
+      "select id from unlocked_memories where memory_id = $1 limit 1",
+      [input.memoryId]
+    );
+    if ((unlocked.rowCount ?? 0) > 0) {
+      throw new MemoryAlreadyUnlockedError();
+    }
     await client.query("select pg_advisory_xact_lock(hashtext($1))", [
       input.guestGroupId,
     ]);
@@ -323,6 +341,50 @@ export async function getGiftAdminRows() {
   );
 
   return result.rows;
+}
+
+export async function grantMemoryWithoutPayment(memoryId: number, guestName: string) {
+  const client = await getPool().connect();
+
+  try {
+    await client.query("begin");
+    // Serialize manual grants so double submissions cannot create two records.
+    await client.query("select pg_advisory_xact_lock(hashtext($1))", [
+      `memory:${memoryId}`,
+    ]);
+    const existing = await client.query(
+      "select id from unlocked_memories where memory_id = $1 limit 1",
+      [memoryId]
+    );
+
+    if ((existing.rowCount ?? 0) > 0) {
+      await client.query("rollback");
+      return false;
+    }
+
+    // Keep the existing payment/unlock relationship, explicitly recording that
+    // no charge or payment approval occurred.
+    const payment = await client.query<{ id: string }>(
+      `insert into gift_payments (
+        memory_id, guest_name, guest_email, amount, paid_amount, status, external_reference
+      ) values ($1, $2, '', 0, 0, 'manual_grant', $3)
+      returning id`,
+      [memoryId, guestName, `manual:${crypto.randomUUID()}`]
+    );
+    await client.query(
+      `insert into unlocked_memories (
+        memory_id, gift_payment_id, guest_name, unlock_token
+      ) values ($1, $2, $3, $4)`,
+      [memoryId, payment.rows[0].id, guestName, crypto.randomBytes(32).toString("hex")]
+    );
+    await client.query("commit");
+    return true;
+  } catch (error) {
+    await client.query("rollback");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export async function updateUnlockedMemoryGuestName(

@@ -22,6 +22,8 @@ type ApiMessage = {
   message?: string;
 };
 
+type MemoryOption = { id: number; subtitle?: string };
+
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -57,6 +59,11 @@ export default function GiftAdminPanel() {
   const [savingId, setSavingId] = useState("");
   const [notice, setNotice] = useState("");
   const [query, setQuery] = useState("");
+  const [memories, setMemories] = useState<MemoryOption[]>([]);
+  const [selectedMemoryId, setSelectedMemoryId] = useState("");
+  const [newGuestName, setNewGuestName] = useState("");
+  const [granting, setGranting] = useState(false);
+  const [grantNotice, setGrantNotice] = useState("");
 
   async function loadGifts() {
     setLoadingGifts(true);
@@ -65,7 +72,7 @@ export default function GiftAdminPanel() {
     try {
       const response = await fetch("/api/admin/gifts", { cache: "no-store" });
       const data = (await response.json()) as
-        | { success: true; gifts: GiftRow[] }
+        | { success: true; gifts: GiftRow[]; memories: MemoryOption[] }
         | ApiMessage;
 
       if (!response.ok || !data.success) {
@@ -76,6 +83,7 @@ export default function GiftAdminPanel() {
       }
 
       setGifts(data.gifts);
+      setMemories(data.memories);
       setDraftNames(
         Object.fromEntries(
           data.gifts.map((gift) => [gift.unlockId, gift.publicGuestName])
@@ -181,6 +189,42 @@ export default function GiftAdminPanel() {
     await fetch("/api/admin/auth/logout", { method: "POST" });
     setAuthenticated(false);
     setGifts([]);
+    setMemories([]);
+    setSelectedMemoryId("");
+    setNewGuestName("");
+    setGrantNotice("");
+  }
+
+  async function grantMemory(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (granting) return;
+    setGranting(true);
+    setGrantNotice("");
+
+    try {
+      const response = await fetch("/api/admin/gifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          memoryId: Number(selectedMemoryId),
+          publicGuestName: newGuestName.trim(),
+        }),
+      });
+      const data = (await response.json()) as { success?: boolean; message?: string };
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message ?? "Não foi possível liberar a memória.");
+      }
+
+      setGrantNotice(`Memória ${selectedMemoryId.padStart(2, "0")} liberada sem pagamento para ${newGuestName.trim()}.`);
+      setSelectedMemoryId("");
+      setNewGuestName("");
+      await loadGifts();
+    } catch (error) {
+      setGrantNotice(error instanceof Error ? error.message : "Não foi possível liberar a memória.");
+    } finally {
+      setGranting(false);
+    }
   }
 
   async function saveGiftName(gift: GiftRow) {
@@ -248,7 +292,7 @@ export default function GiftAdminPanel() {
               Admin presentes
             </p>
             <h1 className="mt-3 text-3xl font-semibold text-[#173447]">
-              Editar nomes exibidos
+              Gerenciar memórias
             </h1>
             <label
               className="mt-8 block text-xs font-semibold uppercase tracking-[0.18em] text-[#607985]"
@@ -293,13 +337,14 @@ export default function GiftAdminPanel() {
               Admin presentes
             </p>
             <h1 className="mt-2 text-3xl font-semibold text-[#173447]">
-              Nomes das memorias
+              Gerenciar memórias
             </h1>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={loadGifts}
+              disabled={granting || loadingGifts}
               className="h-10 border border-[#173447]/20 px-4 text-sm font-semibold text-[#173447] transition hover:bg-white"
             >
               Atualizar
@@ -307,12 +352,62 @@ export default function GiftAdminPanel() {
             <button
               type="button"
               onClick={handleLogout}
+              disabled={granting}
               className="h-10 bg-[#173447] px-4 text-sm font-semibold text-white transition hover:bg-[#082337]"
             >
               Sair
             </button>
           </div>
         </header>
+
+        <form onSubmit={grantMemory} className="mt-5 border border-[#d9cdbb] bg-white p-5">
+          <h2 className="text-lg font-semibold">Liberar memória sem pagamento</h2>
+          <p className="mt-1 text-sm text-[#607985]">
+            Escolha uma memória e informe o nome que aparecerá na galeria. A foto ficará liberada para todos, sem cobrança.
+          </p>
+          <fieldset disabled={granting || loadingGifts} className="mt-4 grid gap-4 md:grid-cols-2">
+            <div>
+              <label htmlFor="grant-memory" className="block text-sm font-semibold">Memória</label>
+              <select
+                id="grant-memory"
+                required
+                value={selectedMemoryId}
+                onChange={(event) => setSelectedMemoryId(event.target.value)}
+                className="mt-2 h-12 w-full border border-[#d9cdbb] bg-white px-3 text-sm outline-none focus:border-[#3f7f97] focus:ring-4 focus:ring-[#9fc7d7]/30"
+              >
+                <option value="">Selecione uma memória</option>
+                {memories.map((memory) => {
+                  const unlocked = gifts.some((gift) => gift.memoryId === memory.id);
+                  return (
+                    <option key={memory.id} value={memory.id} disabled={unlocked}>
+                      {String(memory.id).padStart(2, "0")}{memory.subtitle ? ` — ${memory.subtitle}` : ""}{unlocked ? " (já liberada)" : ""}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="grant-name" className="block text-sm font-semibold">Nome público</label>
+              <input
+                id="grant-name"
+                required
+                maxLength={80}
+                value={newGuestName}
+                onChange={(event) => setNewGuestName(event.target.value)}
+                placeholder="Nome da pessoa ou família"
+                className="mt-2 h-12 w-full border border-[#d9cdbb] bg-white px-3 text-sm outline-none focus:border-[#3f7f97] focus:ring-4 focus:ring-[#9fc7d7]/30"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={!selectedMemoryId || !newGuestName.trim() || gifts.some((gift) => gift.memoryId === Number(selectedMemoryId))}
+              className="h-12 bg-[#173447] px-5 text-sm font-semibold text-white transition hover:bg-[#082337] disabled:cursor-not-allowed disabled:bg-[#9ba9ae] md:col-span-2"
+            >
+              {granting ? "Liberando..." : "Liberar sem pagamento"}
+            </button>
+          </fieldset>
+          {grantNotice && <p role="status" className="mt-4 text-sm font-semibold">{grantNotice}</p>}
+        </form>
 
         <div className="mt-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <input
@@ -338,7 +433,7 @@ export default function GiftAdminPanel() {
               <tr>
                 <th className="px-4 py-3">Memoria</th>
                 <th className="px-4 py-3">Nome publico</th>
-                <th className="px-4 py-3">Comprador</th>
+                <th className="px-4 py-3">Pessoa / origem</th>
                 <th className="px-4 py-3">Grupo</th>
                 <th className="px-4 py-3">Valor</th>
                 <th className="px-4 py-3">Data</th>
@@ -386,7 +481,7 @@ export default function GiftAdminPanel() {
                       <td className="px-4 py-4">
                         <p className="font-semibold">{gift.paymentGuestName}</p>
                         <p className="mt-1 text-xs text-[#607985]">
-                          {gift.guestEmail}
+                          {gift.status === "manual_grant" ? "Liberação administrativa" : gift.guestEmail}
                         </p>
                       </td>
                       <td className="px-4 py-4 text-[#607985]">
@@ -396,7 +491,7 @@ export default function GiftAdminPanel() {
                       <td className="px-4 py-4">
                         <p>{formatCurrency(gift.amount)}</p>
                         <p className="mt-1 text-xs uppercase text-[#607985]">
-                          {gift.status}
+                          {gift.status === "manual_grant" ? "Sem pagamento" : gift.status}
                         </p>
                       </td>
                       <td className="px-4 py-4 text-[#607985]">

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import {
   getGiftAdminRows,
+  grantMemoryWithoutPayment,
   updateUnlockedMemoryGuestName,
 } from "../../../../lib/giftsDb";
 import { isAdminAuthenticated } from "../shared";
+import { memories } from "../../../../lib/memories";
 
 export const runtime = "nodejs";
 
@@ -23,6 +25,7 @@ export async function GET() {
 
   return NextResponse.json({
     success: true,
+    memories: memories.map(({ id, subtitle }) => ({ id, subtitle })),
     gifts: gifts.map((gift) => ({
       unlockId: gift.unlock_id,
       memoryId: gift.memory_id,
@@ -38,6 +41,50 @@ export async function GET() {
       paymentCreatedAt: gift.payment_created_at,
     })),
   });
+}
+
+export async function POST(request: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return unauthorized();
+  }
+
+  const body = await request.json().catch(() => null);
+  const memoryId = body?.memoryId;
+  const publicGuestName =
+    typeof body?.publicGuestName === "string" ? body.publicGuestName.trim() : "";
+
+  if (!Number.isInteger(memoryId) || !memories.some(({ id }) => id === memoryId)) {
+    return NextResponse.json(
+      { success: false, message: "Selecione uma memória válida." },
+      { status: 400 }
+    );
+  }
+
+  if (!publicGuestName || publicGuestName.length > 80) {
+    return NextResponse.json(
+      { success: false, message: "Informe um nome público de até 80 caracteres." },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const created = await grantMemoryWithoutPayment(memoryId, publicGuestName);
+
+    if (!created) {
+      return NextResponse.json(
+        { success: false, message: "Esta memória já está liberada. Use a lista para editar o nome." },
+        { status: 409 }
+      );
+    }
+
+    return NextResponse.json({ success: true }, { status: 201 });
+  } catch (error) {
+    console.error("Manual memory grant error", error);
+    return NextResponse.json(
+      { success: false, message: "Não foi possível liberar a memória. Atualize a lista antes de tentar novamente." },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PATCH(request: Request) {

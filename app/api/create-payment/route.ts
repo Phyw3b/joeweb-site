@@ -2,7 +2,9 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import {
   createGiftPayment,
+  canRevealMemory,
   GiftGroupLimitError,
+  MemoryAlreadyUnlockedError,
   markGiftPaymentRejected,
   setGiftPaymentPreference,
 } from "../../../lib/giftsDb";
@@ -155,6 +157,10 @@ export async function POST(request: Request) {
       );
     }
 
+    if (await canRevealMemory(memoryId)) {
+      return errorResponse(new MemoryAlreadyUnlockedError().message, "memory_already_unlocked", 409);
+    }
+
     const guestGroup = await findGiftGuestGroup(guestName);
 
     if (!guestGroup) {
@@ -172,7 +178,7 @@ export async function POST(request: Request) {
         externalReference,
       });
     } catch (error) {
-      if (error instanceof GiftGroupLimitError) {
+      if (error instanceof GiftGroupLimitError || error instanceof MemoryAlreadyUnlockedError) {
         return errorResponse(error.message, "", 409);
       }
 
